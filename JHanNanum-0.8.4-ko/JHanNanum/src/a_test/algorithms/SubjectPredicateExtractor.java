@@ -121,15 +121,21 @@ public class SubjectPredicateExtractor implements PosProcessor {
 			SPTags.clear();
 			
 			for (int j = 0; j < tags.length; j++) {
-				char c = tags[j].charAt(0);
-				if (c == 'N') {
+				//char c = tags[j].charAt(0);
+				String c = tags[j];
+				if (c.equals("NC")) {
 					SPMorphemes.add(morphemes[j]);
 					SPTags.add(tags[j]);
-				}else if (c == 'P') {
+				}else if (c.equals("PV")) {
 					SPMorphemes.add(morphemes[j]);
 					SPTags.add(tags[j]);
-				} 
-				else if (c == 'F') {
+				}else if (c.equals("PA")) {
+					SPMorphemes.add(morphemes[j]);
+					SPTags.add(tags[j]);
+				}else if (c.equals("MA")) {
+					SPMorphemes.add(morphemes[j]);
+					SPTags.add(tags[j]);
+				}else if (c.equals("F")) {
 					SPMorphemes.add(morphemes[j]);
 					SPTags.add("NC");
 				}
