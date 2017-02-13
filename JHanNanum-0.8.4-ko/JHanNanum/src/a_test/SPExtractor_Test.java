@@ -43,7 +43,7 @@ public class SPExtractor_Test {
 
 	public static void main(String[] args) {
 		
-		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_SP_EXTRACTOR);
+		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
 		
 		String[] feature = { "소음", "소리", "가습량", "분무량", "분사량", "디자인"};
 		
@@ -52,8 +52,7 @@ public class SPExtractor_Test {
 			workflow.activateWorkflow(true);
 			
 			/* Analysis using the work flow */
-			//String document = "이 물건은 배송이 빨라서 정말 좋네요.구매자는 남자고요 여름에 가습기를 구매했었습니다.\n";
-			String document = "분무량도 괜찮고 디자인도 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 작아서 좋아요.가습량이 정말 많아요.가습량이 많지 않네요\n";
+			String document = "소리가 빠르다.분무량도 괜찮고 디자인도 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 작아서 좋아요.가습량이 정말 많아요.가습량이 많지 않네요\n";
 			
 			workflow.analyze(document);
 			

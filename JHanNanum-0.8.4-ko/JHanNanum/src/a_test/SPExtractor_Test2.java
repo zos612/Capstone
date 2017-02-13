@@ -43,7 +43,7 @@ public class SPExtractor_Test2 {
 
 	public static void main(String[] args) {
 		
-		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_SP_EXTRACTOR);
+		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
 		
 		String[] feature = { "소음", "소리", "가습량", "분무량", "분사량", "디자인"};
 		
@@ -52,30 +52,54 @@ public class SPExtractor_Test2 {
 			workflow.activateWorkflow(true);
 			
 			/* Analysis using the work flow */
-			//String document = "이 물건은 배송이 빨라서 정말 좋네요.구매자는 남자고요 여름에 가습기를 구매했었습니다.\n";
-			String document = "분무량도 괜찬고 디자인도 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 크지 않아 좋아요.가습량이 많아요.\n";
+			String document = "디자인이 예뻐요.분무량도 괜찮고 디자인도 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 작아서 좋아요.가습량이 정말 많아요.가습량이 많지 않네요.분무량이 많아요.소리가 커요.\n";
 			
 			workflow.analyze(document);
 			
 			//링크드 리스트를 만들어 문장 첫단어를 리스트에 넣는다
 			LinkedList<Sentence> resultList = workflow.getResultOfDocument(new Sentence(0, 0, false));
 			//s는 각문장
+			loop2 :
 			for (Sentence s : resultList) {
 				//어절을 각배열에 넣는다.
 				Eojeol[] eojeolArray = s.getEojeols();
 				//속성이 들어있는 문장을 찾는다
-				for (int i = 0; i < eojeolArray.length; i++) {
-					if (eojeolArray[i].length > 0) {
-						//어절 배열에 있는 단어를 하나 씩 출력
-						String[] morphemes = eojeolArray[i].getMorphemes();
-						String[] tags = eojeolArray[i].getTags();
-						for (int j = 0; j < morphemes.length; j++) {
-							System.out.print(morphemes[j]);
-							System.out.print("/");
-							System.out.print(tags[j]);
+				loop1 :
+				for(int i = 0; i < feature.length; i++){
+					for (int j = 0; j < eojeolArray.length; j++) {
+						String[] morphemes = eojeolArray[j].getMorphemes();
+						String[] tags;
+						for (int k = 0; k < morphemes.length; k++){
+							if(feature[i].equals(morphemes[k])){
+								//NV패턴 찾기
+								morphemes = eojeolArray[j+1].getMorphemes();
+								tags = eojeolArray[j+1].getTags();
+								for (int l = 0; l < morphemes.length; l++){
+									//NV패턴인 경우
+									if(tags[l].charAt(0) == 'P'){
+										//NV패턴 출력
+										System.out.print("{ ");
+										for (int m = j; m < j+2; m++) {
+												//어절 배열에 있는 단어를 하나 씩 출력						
+												morphemes = eojeolArray[m].getMorphemes();
+												tags = eojeolArray[m].getTags();
+												for (int n = 0; n < morphemes.length; n++) {
+													System.out.print(morphemes[n]);
+													System.out.print("/");
+													System.out.print(tags[n]);
+												}
+												System.out.print(", ");
+										}
+										System.out.print("}");
+									}
+								}
+								break loop1;
+							}
 						}
-						System.out.print(", ");
 					}
+					//문장과 속성이 일치하지 않은 경우 다음 문장을 찾는다.
+					if(i == feature.length - 1)
+						continue loop2;
 				}
 			}
 			

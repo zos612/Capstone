@@ -115,7 +115,7 @@ public class ChartMorphAnalyzer implements MorphAnalyzer {
 			StringTokenizer st = new StringTokenizer(analysis, "^");
 			while (st.hasMoreTokens()) {
 				String analyzed = st.nextToken();
-				String[] tokens = analyzed.split("\\+|/");
+				String[] tokens = analyzed.split("\\+|/");//+와/분리
 				
 				String[] morphemes = new String[tokens.length / 2];
 				String[] tags = new String[tokens.length / 2];

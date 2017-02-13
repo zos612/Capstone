@@ -49,7 +49,7 @@ public class WorkflowNounExtractor {
 			workflow.activateWorkflow(true);
 			
 			/* Analysis using the work flow */
-			String document = "이 물건은 배송이 빨라서 정말 좋네요.구매자는 남자고요 여름에 가습기를 구매했었습니다.hi my name is yong\n";
+			String document = "같이.이 물건은 배송이 빨라서 정말 좋네요.구매자는 남자고요 여름에 가습기를 구매했었습니다.hi my name is yong\n";
 			workflow.analyze(document);
 			
 			/*String sentence = workflow.getResultOfSentence();
@@ -61,6 +61,7 @@ public class WorkflowNounExtractor {
 				//어절을 각배열에 넣는다.
 				Eojeol[] eojeolArray = s.getEojeols();
 				for (int i = 0; i < eojeolArray.length; i++) {
+					//어절 배열에 단어가 들어 있는지 체크
 					if (eojeolArray[i].length > 0) {
 						//어절 배열에 있는 단어를 하나 씩 출력
 						String[] morphemes = eojeolArray[i].getMorphemes();

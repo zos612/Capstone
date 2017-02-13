@@ -70,8 +70,9 @@ public class WorkflowFactory {
 	 * Predefined work flow for simple POS tagging with 9 tags.
 	 */
 	public static final int WORKFLOW_POS_SIMPLE_09 = 0x05;
+
 	
-	public static final int WORKFLOW_SP_EXTRACTOR = 0x06;
+	public static final int WORKFLOW_POS_22_AND_EXTRACTOR = 0x06;
 	
 
 	/**
@@ -130,7 +131,7 @@ public class WorkflowFactory {
 			workflow.setPosTagger(new HMMTagger(), "conf/plugin/MajorPlugin/PosTagger/HmmPosTagger.json");
 			workflow.appendPosProcessor(new SimplePOSResult09(), null);
 			break;
-		case WORKFLOW_SP_EXTRACTOR:
+		case WORKFLOW_POS_22_AND_EXTRACTOR:
 			workflow.appendPlainTextProcessor(new SentenceSegmentor(), null);
 			workflow.appendPlainTextProcessor(new InformalSentenceFilter(), null);//plainTextPluginCnt 각각 1씩증가
 			
@@ -138,7 +139,8 @@ public class WorkflowFactory {
 			workflow.appendMorphemeProcessor(new UnknownProcessor(), null);
 			
 			workflow.setPosTagger(new HMMTagger(), "conf/plugin/MajorPlugin/PosTagger/HmmPosTagger.json");
-			workflow.appendPosProcessor(new SubjectPredicateExtractor(), null);
+			workflow.appendPosProcessor(new SimplePOSResult22(), null);
+			workflow.appendPosProcessor(new SpecificPOSExtractor(), null);
 			break;
 		
 			

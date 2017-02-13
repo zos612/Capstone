@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="JHanNanum/src"/>
 	<classpathentry kind="lib" path="GUIDemo/jhannanum.jar"/>
-	<classpathentry kind="lib" path="jhannanum.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/yong/Desktop/라이브러리/NLPHub-latest.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jsoup"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.40-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import a_test.algorithms.CorrectionDic;
 import kr.ac.kaist.swrc.jhannanum.comm.PlainSentence;
 import kr.ac.kaist.swrc.jhannanum.comm.Sentence;
 import kr.ac.kaist.swrc.jhannanum.comm.SetOfSentences;
@@ -169,6 +170,9 @@ public class Workflow {
 	private String baseDir = null;
 	
 	
+	private CorrectionDic correctionDic = null;
+	
+	
 	/* Communication Queues */
 	
 	/**
@@ -205,7 +209,7 @@ public class Workflow {
 		queuePhase3 = new ArrayList<LinkedBlockingQueue<Sentence>>(maxSupplementPluginNum + 1);
 		
 		threadList = new LinkedList<Thread>();
-		
+			
 		isInitialized = true;
 		
 		this.baseDir = ".";
@@ -399,6 +403,7 @@ public class Workflow {
 			
 			outputPhaseNum = 3;
 			outputQueueNum = posPluginCnt;
+			
 			runThreads();
 		} else {
 			isThreadMode = false;
