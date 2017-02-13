@@ -19,7 +19,8 @@ package a_test;
 
 import java.util.LinkedList;
 
-import a_test.algorithms.FeatureExtractor;
+import a_test.algorithms.POSPatternExtractor;
+import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 import kr.ac.kaist.swrc.jhannanum.comm.Sentence;
 import kr.ac.kaist.swrc.jhannanum.hannanum.Workflow;
 import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
@@ -39,28 +40,48 @@ import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
  * 
  * @author Sangwon Park (hudoni@world.kaist.ac.kr), CILab, SWRC, KAIST
  */
-public class SentimentAnalysis_Test {
-	
+public class SPExtractor_Test3 {
+
 	public static void main(String[] args) {
 		
-		FeatureExtractor featureExtractor = null;
-		featureExtractor = new FeatureExtractor();
-		
 		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
-
+		
+		String[] feature = { "소음", "소리", "가습량", "분무량", "분사량", "디자인"};
+		
 		try {
 			/* Activate the work flow in the thread mode */
 			workflow.activateWorkflow(true);
 			
 			/* Analysis using the work flow */
-			String document = "예쁘다.안녕하세요.디자인이 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 작아서 좋아요.소리가 너무 커요.가습량이 많지 않네요.분무량이  많아요.\n";
+			String document = "디자인이 예뻐요.분무량도 괜찮고 디자인도 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 작아서 좋아요.가습량이 정말 많아요.가습량이 많지 않네요.분무량이 많아요.소리가 커요.\n";
 			
 			workflow.analyze(document);
 			
+			//링크드 리스트를 만들어 문장 첫단어를 리스트에 넣는다
 			LinkedList<Sentence> resultList = workflow.getResultOfDocument(new Sentence(0, 0, false));
-			
+			//s는 각문장
+			loop2 :
 			for (Sentence s : resultList) {
-				featureExtractor.extract(s);
+				//어절을 각배열에 넣는다.
+				Eojeol[] eojeolArray = s.getEojeols();
+				//속성이 들어있는 문장을 찾는다
+				loop1 :
+				for(int i = 0; i < feature.length; i++){
+					for (int j = 0; j < eojeolArray.length; j++) {
+						String[] morphemes = eojeolArray[j].getMorphemes();
+						for (int k = 0; k < morphemes.length; k++){
+							//특징과 문장속 단어가 일치
+							if(feature[i].equals(morphemes[k])){
+								//패턴분석
+								//POSPatternExtractor.analyze(eojeolArray,j);
+								break loop1;
+							}
+						}
+					}
+					//문장과 속성이 일치하지 않은 경우 다음 문장을 찾는다.
+					if(i == feature.length - 1)
+						continue loop2;
+				}
 			}
 			
 			workflow.close();

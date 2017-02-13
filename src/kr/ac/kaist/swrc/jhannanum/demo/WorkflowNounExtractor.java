@@ -15,11 +15,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with JHanNanum.  If not, see <http://www.gnu.org/licenses/>   */
 
-package a_test;
+package kr.ac.kaist.swrc.jhannanum.demo;
 
 import java.util.LinkedList;
 
-import a_test.algorithms.FeatureExtractor;
+import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 import kr.ac.kaist.swrc.jhannanum.comm.Sentence;
 import kr.ac.kaist.swrc.jhannanum.hannanum.Workflow;
 import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
@@ -39,30 +39,66 @@ import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
  * 
  * @author Sangwon Park (hudoni@world.kaist.ac.kr), CILab, SWRC, KAIST
  */
-public class SentimentAnalysis_Test {
-	
-	public static void main(String[] args) {
-		
-		FeatureExtractor featureExtractor = null;
-		featureExtractor = new FeatureExtractor();
-		
-		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
+public class WorkflowNounExtractor {
 
+	public static void main(String[] args) {
+		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_NOUN_EXTRACTOR);
+		
 		try {
 			/* Activate the work flow in the thread mode */
 			workflow.activateWorkflow(true);
 			
 			/* Analysis using the work flow */
-			String document = "예쁘다.안녕하세요.디자인이 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 작아서 좋아요.소리가 너무 커요.가습량이 많지 않네요.분무량이  많아요.\n";
-			
+			String document = "같이.이 물건은 배송이 빨라서 정말 좋네요.구매자는 남자고요 여름에 가습기를 구매했었습니다.hi my name is yong\n";
 			workflow.analyze(document);
 			
+			/*String sentence = workflow.getResultOfSentence();
+			System.out.println(sentence);*/ //명사만 분석되서 나옴
+			//링크드 리스트를 만들어 문장 첫단어를 리스트에 넣는다
 			LinkedList<Sentence> resultList = workflow.getResultOfDocument(new Sentence(0, 0, false));
-			
+			//s는 각문장
 			for (Sentence s : resultList) {
-				featureExtractor.extract(s);
+				//어절을 각배열에 넣는다.
+				Eojeol[] eojeolArray = s.getEojeols();
+				for (int i = 0; i < eojeolArray.length; i++) {
+					//어절 배열에 단어가 들어 있는지 체크
+					if (eojeolArray[i].length > 0) {
+						//어절 배열에 있는 단어를 하나 씩 출력
+						String[] morphemes = eojeolArray[i].getMorphemes();
+						String[] tags = eojeolArray[i].getTags();
+						for (int j = 0; j < morphemes.length; j++) {
+							System.out.print(morphemes[j]);
+							System.out.print("/");
+							System.out.print(tags[j]);
+						}
+						System.out.print(", ");
+					}
+				}
 			}
 			
+			/* Once a work flow is activated, it can be used repeatedly. */
+			//document = "프로젝트 전체 회의.\n"
+				//+ "회의 일정은 다음과 같습니다.\n"
+				//+ "日時: 2010년 7월 30일 오후 1시\n"
+				//+ "場所: Coex Conference Room\n";
+			
+		/*	workflow.analyze(document);
+			
+			resultList = workflow.getResultOfDocument(new Sentence(0, 0, false));
+			for (Sentence s : resultList) {
+				Eojeol[] eojeolArray = s.getEojeols();
+				for (int i = 0; i < eojeolArray.length; i++) {
+					if (eojeolArray[i].length > 0) {
+						String[] morphemes = eojeolArray[i].getMorphemes();
+						for (int j = 0; j < morphemes.length; j++) {
+							System.out.print(morphemes[j]);
+						}
+						System.out.print(", ");
+					}
+				}
+			}
+			System.out.println();
+			*/
 			workflow.close();
 			
 		} catch (Exception e) {

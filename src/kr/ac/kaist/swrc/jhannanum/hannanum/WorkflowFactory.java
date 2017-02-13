@@ -70,6 +70,7 @@ public class WorkflowFactory {
 	 * Predefined work flow for simple POS tagging with 9 tags.
 	 */
 	public static final int WORKFLOW_POS_SIMPLE_09 = 0x05;
+
 	
 	public static final int WORKFLOW_POS_22_AND_EXTRACTOR = 0x06;
 	
@@ -139,7 +140,7 @@ public class WorkflowFactory {
 			
 			workflow.setPosTagger(new HMMTagger(), "conf/plugin/MajorPlugin/PosTagger/HmmPosTagger.json");
 			workflow.appendPosProcessor(new SimplePOSResult22(), null);
-			workflow.appendPosProcessor(new SpecificTagExtractor(), null);
+			workflow.appendPosProcessor(new SpecificPOSExtractor(), null);
 			break;
 		
 			

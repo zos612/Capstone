@@ -15,22 +15,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with JHanNanum.  If not, see <http://www.gnu.org/licenses/>   */
 
-package a_test;
+package kr.ac.kaist.swrc.jhannanum.demo;
 
-import java.util.LinkedList;
-
-import a_test.algorithms.FeatureExtractor;
-import kr.ac.kaist.swrc.jhannanum.comm.Sentence;
 import kr.ac.kaist.swrc.jhannanum.hannanum.Workflow;
 import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
 
 /**
  * This is a demo program of HanNanum that helps users to utilize the HanNanum library easily.
- * It uses a predefined work flow for noun extracting, which extracts only the nouns in the
- * given document. <br>
+ * It uses a predefined work flow for morphological analysis, which generates all possible
+ * morphological analysis results per given eojeol.<br>
  * <br>
- * It performs noun extraction for a Korean document with the following procedure:<br>
- * 		1. Create a predefined work flow for morphological analysis, POS tagging, and noun extraction.<br>
+ * It performs morphological analysis for a Korean document with the following procedure:<br>
+ * 		1. Create a predefined work flow for morphological analysis.<br>
  * 		2. Activate the work flow in multi-thread mode.<br>
  * 		3. Analyze a document that consists of several sentences.<br>
  * 		4. Print the result on the console.<br>
@@ -39,29 +35,28 @@ import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
  * 
  * @author Sangwon Park (hudoni@world.kaist.ac.kr), CILab, SWRC, KAIST
  */
-public class SentimentAnalysis_Test {
-	
-	public static void main(String[] args) {
-		
-		FeatureExtractor featureExtractor = null;
-		featureExtractor = new FeatureExtractor();
-		
-		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
+public class WorkflowMorphAnalyzer {
 
+	public static void main(String[] args) {
+		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_MORPH_ANALYZER);
+		
 		try {
 			/* Activate the work flow in the thread mode */
 			workflow.activateWorkflow(true);
 			
 			/* Analysis using the work flow */
-			String document = "예쁘다.안녕하세요.디자인이 예뻐요.이 물건은 배송이 빨라서 정말 좋네요.소리가 작아서 좋아요.소리가 너무 커요.가습량이 많지 않네요.분무량이  많아요.\n";
+			String document = "프로젝트 전체 회의.\n"
+				+ "회의 일정은 다음과 같습니다.\n";
 			
 			workflow.analyze(document);
+			System.out.println(workflow.getResultOfDocument());
 			
-			LinkedList<Sentence> resultList = workflow.getResultOfDocument(new Sentence(0, 0, false));
+			/* Once a work flow is activated, it can be used repeatedly. */
+			document = "日時: 2010년 7월 30일 오후 1시\n"
+				+ "場所: Coex Conference Room\n";
 			
-			for (Sentence s : resultList) {
-				featureExtractor.extract(s);
-			}
+			workflow.analyze(document);
+			System.out.println(workflow.getResultOfDocument());
 			
 			workflow.close();
 			
