@@ -1,0 +1,6 @@
+1	이/MM	2	DP	NMOD
+2	물건/NNG+은/JX	6	NP	SBJ
+3	배송/NNG+이/JKS	4	NP	SBJ
+4	빠르/VA+아/EC	6	VP	VMOD
+5	정말/MAG	6	AP	ADV
+6	좋/VA+네/EC+요/JX+./SF	0	VP	ROOT
