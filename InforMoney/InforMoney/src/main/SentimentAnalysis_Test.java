@@ -41,7 +41,7 @@ import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
  * @author Sangwon Park (hudoni@world.kaist.ac.kr), CILab, SWRC, KAIST
  */
 public class SentimentAnalysis_Test {
-	
+	///
 	public static void main(String[] args) {
 		
 		OpinionMiningProcess opinionMining = null;
