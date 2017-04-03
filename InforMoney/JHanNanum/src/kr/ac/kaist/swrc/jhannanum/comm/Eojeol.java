@@ -54,10 +54,12 @@ public class Eojeol {
 	public Eojeol(String[] morphemes, String[] tags) {
 		this.morphemes = morphemes;
 		this.tags = tags;
-		if (morphemes.length < tags.length) {
-			length = morphemes.length;
-		} else {
-			length = tags.length;
+		if(tags != null || morphemes != null){
+			if (morphemes.length < tags.length) {
+				length = morphemes.length;
+			} else {
+				length = tags.length;
+			}
 		}
 	}
 	
@@ -84,12 +86,22 @@ public class Eojeol {
 	 */
 	public void setMorphemes(String[] morphemes) {
 		this.morphemes = morphemes;
+		if(tags != null || morphemes != null){
+			if (tags != null && tags.length < morphemes.length) {
+				length = tags.length;
+			} else {
+				length = morphemes.length;
+			}
+		}
+	}
+	/*public void setMorphemes(String[] morphemes) {
+		this.morphemes = morphemes;
 		if (tags != null && tags.length < morphemes.length) {
 			length = tags.length;
 		} else {
 			length = morphemes.length;
 		}
-	}
+	}*/
 	
 	/**
 	 * Set a morpheme on the specific position
@@ -129,12 +141,22 @@ public class Eojeol {
 	 */
 	public void setTags(String[] tags) {
 		this.tags = tags;
+		if(tags != null || morphemes != null){
+			if (morphemes != null && morphemes.length < tags.length) {
+				length = morphemes.length;
+			} else {
+				length = tags.length;
+			}
+		}
+	}
+	/*public void setTags(String[] tags) {
+		this.tags = tags;
 		if (morphemes != null && morphemes.length < tags.length) {
 			length = morphemes.length;
 		} else {
 			length = tags.length;
 		}
-	}
+	}*/
 	
 	/**
 	 * It changes the tag of the morpheme on the index

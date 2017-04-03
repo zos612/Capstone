@@ -65,7 +65,6 @@ public class SpecificPOSExtractor implements PosProcessor {
 				//char c = tags[j].charAt(0);
 				String c = tags[j];
 				//각 형태소를 보정된 단어 사전에서 찾아 보정시킵니다.
-				String corMorph = DictionaryInit.correctionDic.get(morphemes[j]);
 				if (c.equals("NC")) {
 					Morphemes.add(morphemes[j]);
 					Tags.add(tags[j]);
@@ -76,7 +75,7 @@ public class SpecificPOSExtractor implements PosProcessor {
 					Morphemes.add(morphemes[j]);
 					Tags.add(tags[j]);
 				}else if (c.charAt(0)=='P') {
-					Morphemes.add(corMorph);
+					Morphemes.add(morphemes[j]);
 					Tags.add(tags[j]);
 				}else if (c.equals("MA")) {
 					Morphemes.add(morphemes[j]);
@@ -84,7 +83,11 @@ public class SpecificPOSExtractor implements PosProcessor {
 				}else if (c.equals("SF")) {
 					Morphemes.add(null);
 						Tags.add(tags[j]);
-				}/*else if (c.equals("F")) {
+				}else if(j == 0){
+					Morphemes.add(null);
+					Tags.add(null);
+				}
+				/*else if (c.equals("F")) {
 					Morphemes.add(morphemes[j]);
 					Tags.add("NC");
 				}*/
