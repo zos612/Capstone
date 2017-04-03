@@ -29,6 +29,10 @@ public class OpinionMiningProcess {
 	
 	Eojeol[] eojeol = new Eojeol[30];
 	
+	Eojeol[] tmpEojeol = null;
+	
+	int tmpSentiment = 0;
+	
 	public static int extCnt = 0;
 	
 	public OpinionMiningProcess(){
