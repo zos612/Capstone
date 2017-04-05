@@ -52,7 +52,7 @@ public class OpinionMiningProcess {
 	}
 		public void featureExtract(Sentence s){
 			
-			String[] feature = {"배송", "화질", "가격", "소음", "소리", "가습량", "분무량", "분사량", "디자인"};
+			String[] feature = {"가격", "소음", "소리", "가습량", "분무량", "분사량", "디자인"};
 			//String[] feature = {"가습량", "분무량"};
 
 			//어절을 각배열에 넣는다.

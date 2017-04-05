@@ -8,20 +8,20 @@ public class DictionaryReader {
 	
 	public static Dictionary sentimentDic = null;
 	
-	public static Dictionary correctionDic = null;
+	public static Dictionary VACor = null;
 	
-	public static Dictionary nounDic = null;
+	public static Dictionary nounCor = null;
 	
 	public DictionaryReader(){
 		sentimentDic = new Dictionary();
-		correctionDic = new Dictionary();
-		nounDic = new Dictionary();
+		VACor = new Dictionary();
+		nounCor = new Dictionary();
 		
 	}
 	public void init() throws UnsupportedEncodingException, FileNotFoundException, IOException{
 		sentimentDic.readDic(".\\data\\kE\\dic_sentiment.txt");
-		correctionDic.readDic(".\\data\\kE\\dic_verb_adjective_correction.txt");
-		nounDic.readDic(".\\data\\kE\\dic_noun_correction.txt");
+		VACor.readDic(".\\data\\kE\\dic_correction_verb_adjective.txt");
+		nounCor.readDic(".\\data\\kE\\dic_correction_noun.txt");
 	}
 	
 }

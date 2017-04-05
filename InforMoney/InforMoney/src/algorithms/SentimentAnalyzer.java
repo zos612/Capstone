@@ -69,6 +69,7 @@ public class SentimentAnalyzer {
 		this.eojeolArray = eojeolArray;
 		this.fNum = fNum;
 		fKey = 0;
+		sentimentV = 0;
 		
 		if(fNum >= 1){
 			fKey = 1;
@@ -150,7 +151,7 @@ public class SentimentAnalyzer {
 	public void sentAnalyze(){
 
 		if(patternNum == NV_PATTERN){
-			tempMorph = DictionaryReader.correctionDic.get(morphP1[0]);
+			tempMorph = DictionaryReader.VACor.get(morphP1[0]);
 			if(tempMorph != null){
 				morphP1[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphP1[0]);
@@ -160,7 +161,7 @@ public class SentimentAnalyzer {
 			end = fNum + 2;
 		}
 		else if(patternNum == NZV_PATTERN){
-			tempMorph = DictionaryReader.correctionDic.get(morphP2[0]);
+			tempMorph = DictionaryReader.VACor.get(morphP2[0]);
 			if(tempMorph != null){
 				morphP2[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphP2[0]);
@@ -171,7 +172,7 @@ public class SentimentAnalyzer {
 		}
 		//sentMorph가 널인 경우 에러 발생
 		else if(patternNum == NZN_PATTERN){
-			tempMorph = DictionaryReader.nounDic.get(morphP2[0]);
+			tempMorph = DictionaryReader.VACor.get(morphP2[0]);
 			if(tempMorph != null){
 				morphP2[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphP2[0]);
@@ -181,7 +182,7 @@ public class SentimentAnalyzer {
 			end = fNum + 3;
 		}
 		else if(patternNum == NNN_PATTERN){
-			tempMorph = DictionaryReader.nounDic.get(morphP2[0]);
+			tempMorph = DictionaryReader.VACor.get(morphP2[0]);
 			if(tempMorph != null){
 				morphP2[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphP2[0]);
@@ -191,7 +192,7 @@ public class SentimentAnalyzer {
 			end = fNum + 3;
 		}
 		else if(patternNum == VN_PATTERN){
-			tempMorph = DictionaryReader.correctionDic.get(morphM1[0]);
+			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
 			if(tempMorph != null){
 				morphM1[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphM1[0]);
@@ -201,7 +202,7 @@ public class SentimentAnalyzer {
 			end = fNum + 1;
 		}	
 		else if(patternNum == NN_PATTERN){
-			tempMorph = DictionaryReader.nounDic.get(morphM1[0]);
+			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
 			if(tempMorph != null){
 				morphM1[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphM1[0]);
@@ -211,7 +212,7 @@ public class SentimentAnalyzer {
 			end = fNum + 1;
 		}	
 		else if(patternNum == ZVN_PATTERN){
-			tempMorph = DictionaryReader.correctionDic.get(morphM1[0]);
+			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
 			if(tempMorph != null){
 				morphM1[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphM1[0]);
@@ -221,7 +222,7 @@ public class SentimentAnalyzer {
 			end = fNum + 1;
 		}	
 		else if(patternNum == ZNN_PATTERN){
-			tempMorph = DictionaryReader.nounDic.get(morphM1[0]);
+			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
 			if(tempMorph != null){
 				morphM1[0] = tempMorph;
 				sentMorph = DictionaryReader.sentimentDic.get(morphM1[0]);
