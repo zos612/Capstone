@@ -50,7 +50,7 @@ public class SentimentAnalyzer {
 	Eojeol[] eojeolArray;
 	Eojeol[] newArray;
 	
-	int fNum;
+	int fNum = 0;
 	int fKey = 0;
 	int start;
 	int end;
@@ -59,10 +59,7 @@ public class SentimentAnalyzer {
 	public SentimentAnalyzer(){
 		morphList = new LinkedList<String>();
 		tagList = new LinkedList<String>();
-		newArray = new Eojeol[10];
-		for(int i = 0 ; i < 10 ; i++){
-			newArray[i] = new Eojeol(null,null);
-		}
+		
 	}
 	
 	public SentimentEojeol patternAnalyze(Eojeol[] eojeolArray, int fNum){
@@ -71,26 +68,19 @@ public class SentimentAnalyzer {
 		//if(startTag[0].charAt(0)=='P'){
 		this.eojeolArray = eojeolArray;
 		this.fNum = fNum;
+		fKey = 0;
 		
-		/*morphM1[0] = "";
-		tagM1[0] = "";
-		morphM2[0] = "";
-		tagM2[0] = "";
-		morphP1[0] = "";
-		tagP1[0] = "";
-		morphP2[0] = "";
-		tagP2[0] = "";*/
-		//morphP1Tmp[0] = "";
-		//morphP2Tmp[0] = "";
 		if(fNum >= 1){
 			fKey = 1;
 			morphM1 = eojeolArray[fNum-1].getMorphemes();
 			tagM1 = eojeolArray[fNum-1].getTags();
 		}
-		if(fNum >= 2){
+		if(fNum >= 2  ){
+			if(eojeolArray[fNum-2].getMorphemes()[0] != null){
 			fKey = 2;
 			morphM2 = eojeolArray[fNum-2].getMorphemes();
 			tagM2 = eojeolArray[fNum-2].getTags();
+			}
 		}
 		/*morphP1Tmp = eojeolArray[fNum+1].getMorphemes();
 		if(morphP1Tmp[0] != null){*/
@@ -121,7 +111,7 @@ public class SentimentAnalyzer {
 				patternNum = NNN_PATTERN;
 				sentAnalyze();
 				}
-			if(fKey == 1){// fKey가  1이면 feature의 배열 위치가 1일때
+			else if(fKey >= 1){// fKey가  1이면 feature의 배열 위치가 1일때
 				if(fKey == 2){// fKey가  2이면 feature의 배열 위치가 2이상 일때
 					if(tagM1[j].charAt(0)=='P' && !tagM2[j].equals("MA")){
 						patternNum = VN_PATTERN;
@@ -148,6 +138,9 @@ public class SentimentAnalyzer {
 					patternNum = NN_PATTERN;
 					sentAnalyze();
 					}
+				}
+				else{
+					return null;
 				}
 			}
 		return se;
@@ -237,9 +230,15 @@ public class SentimentAnalyzer {
 			start = fNum - 2;
 			end = fNum + 1;
 		}	
+		
 		print();
 	}
 	public void print(){
+		
+		newArray = new Eojeol[end - start + 1];
+		for(int i = 0 ; i < end - start + 1 ; i++){
+			newArray[i] = new Eojeol(null,null);
+		}
 		
 		System.out.print("{ ");
 		
@@ -259,11 +258,14 @@ public class SentimentAnalyzer {
 				}
 				System.out.print(", ");
 				
+				
+				
 				newArray[k-start].setMorphemes(morphList.toArray(new String[0]));
 				newArray[k-start].setTags(tagList.toArray(new String[0]));
 		}
 		
 		se = new SentimentEojeol(newArray, sentimentV);
+		se.length = end - start;
 		
 		System.out.print("} ");
 		System.out.print("-> ");

@@ -29,9 +29,9 @@ public class OpinionMiningProcess {
 	
 	Eojeol[] eojeol = new Eojeol[30];
 	
-	Eojeol[] tmpEojeol = null;
+	private Eojeol[] tmpEojeol = null;
 	
-	int tmpSentiment = 0;
+	private int tmpSentiment = 0;
 	
 	public static int extCnt = 0;
 	
@@ -56,7 +56,7 @@ public class OpinionMiningProcess {
 			//String[] feature = {"가습량", "분무량"};
 
 			//어절을 각배열에 넣는다.
-			Eojeol[] eojeolArray = new Eojeol[10];
+			Eojeol[] eojeolArray; //= new Eojeol[10];
 			eojeolArray = s.getEojeols();
 			//속성이 들어있는 문장을 찾는다
 			//loop1 :
@@ -69,7 +69,17 @@ public class OpinionMiningProcess {
 						//패턴분석
 							se = patternAnalyzer.patternAnalyze(eojeolArray,fNum);
 							if(se != null){
-								seArray[seNum].setEojeols(se.getEojeols());
+								tmpEojeol = new Eojeol[se.length+1];
+								for(int a=0; a < se.length+1; a++){
+								tmpEojeol[a] = new Eojeol(null,null);
+							}
+								//tmpEojeol[0].setMorpheme(0, (se.getEojeol(0).getMorpheme(0)));
+								for(int a = 0; a < se.length; a++){
+								tmpEojeol[a].setMorphemes(se.getEojeol(a).getMorphemes());
+								tmpEojeol[a].setTags(se.getEojeol(a).getTags());
+								}
+								//tmpSentiment = se.getSentiment();
+								seArray[seNum].setEojeols(tmpEojeol);
 								seArray[seNum++].setSentiment(se.getSentiment());
 								se = null;
 							}
@@ -83,8 +93,8 @@ public class OpinionMiningProcess {
 			}
 		}	
 		public void output(){
-			
-		for(int i = 0; i<seNum; i++ ){
+			System.out.println();
+		for(int i = 0; i < seNum-1; i++ ){
 			if(seArray[i] == null)
 				break;
 				eojeol = seArray[i].getEojeols();

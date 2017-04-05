@@ -26,7 +26,7 @@ import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
  * 
  * @author Sangwon Park (hudoni@world.kaist.ac.kr), CILab, SWRC, KAIST
  */
-public class SentimentEojeol {
+public class SentimentEojeol implements Cloneable {
 	/**
 	 * The number of eojeols in this eojeol.
 	 */
@@ -35,12 +35,12 @@ public class SentimentEojeol {
 	/**
 	 * eojeols in the eojeol.
 	 */
-	public Eojeol[] eojeols = null;
+	private Eojeol[] eojeols = null;
 	
 	/**
 	 * Eojeol sentiment of each morpheme.
 	 */
-	public int sentiment = 0;
+	private int sentiment = 0;
 	
 	/**
 	 * Constructor.
@@ -59,6 +59,13 @@ public class SentimentEojeol {
 		this.sentiment = sentiment;
 		
 	}
+	 public Object clone(){
+		 try{
+			 return super.clone();
+		 }catch(CloneNotSupportedException e){
+			 return null;
+		 }
+	 }
 	
 	
 	/**
@@ -164,3 +171,4 @@ public class SentimentEojeol {
 		return str;
 	}
 }
+

@@ -110,13 +110,23 @@ public class Eojeol {
 	 * @return index: when the morpheme was set up correctly, otherwise -1
 	 */
 	public int setMorpheme(int index, String morpheme) {
-		if (index >= 0 && index < morphemes.length) {
-			morphemes[index] = morpheme;
-			return index;
-		} else {
-			return -1;
-		}
+		if(tags != null || morphemes != null){
+			if (index >= 0 && index < morphemes.length) {
+				morphemes[index] = morpheme;
+				return index;
+			} else {
+				return -1;
+			}
+		}return -1;
 	}
+	/*public int setMorpheme(int index, String morpheme) {
+			if (index >= 0 && index < morphemes.length) {
+				morphemes[index] = morpheme;
+				return index;
+			} else {
+				return -1;
+			}
+	}*/
 	
 	/**
 	 * It returns the tag list for the morphemes in the eojeol.
