@@ -54,7 +54,7 @@ public class Eojeol {
 	public Eojeol(String[] morphemes, String[] tags) {
 		this.morphemes = morphemes;
 		this.tags = tags;
-		if(tags != null || morphemes != null){
+		if(tags != null && morphemes != null){
 			if (morphemes.length < tags.length) {
 				length = morphemes.length;
 			} else {

@@ -52,9 +52,13 @@ public class SpecificPOSExtractor implements PosProcessor {
 	public Sentence doProcess(Sentence st) {
 		String[] tags;
 		String[] morphemes;
+		int eLength = st.getEojeols().length;
 		
-		Eojeol[] eojeolSet = st.getEojeols();
-				
+		Eojeol[] eojeolSet = new Eojeol[st.getEojeols().length + 1];
+		for (int a = 0; a < eLength + 1 ; a++){
+			eojeolSet[a] = new Eojeol(null,null);
+		}
+		eojeolSet = st.getEojeols();
 		for (int i = 0; i < eojeolSet.length; i++) {
 			morphemes = eojeolSet[i].getMorphemes();
 			tags = eojeolSet[i].getTags();
