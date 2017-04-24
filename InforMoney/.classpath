@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="JHanNanum/src"/>
 	<classpathentry kind="src" path="InforMoney/src"/>
 	<classpathentry kind="lib" path="GUIDemo/jhannanum.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jsoup"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.40-bin.jar"/>
+	<classpathentry kind="lib" path="lib/jsoup-1.10.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

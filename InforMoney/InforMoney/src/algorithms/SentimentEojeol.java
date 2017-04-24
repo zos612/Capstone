@@ -32,15 +32,18 @@ public class SentimentEojeol implements Cloneable {
 	 */
 	public int length = 0;
 	
+	private String seFeature = null;
+	
+	private String seSentMorph = null;
+	
+	/**
+	 * Eojeol sentValue of each morpheme.
+	 */
+	private int sentValue = 0;
 	/**
 	 * eojeols in the eojeol.
 	 */
 	private Eojeol[] eojeols = null;
-	
-	/**
-	 * Eojeol sentiment of each morpheme.
-	 */
-	private int sentiment = 0;
 	
 	/**
 	 * Constructor.
@@ -51,13 +54,14 @@ public class SentimentEojeol implements Cloneable {
 	/**
 	 * Constructor.
 	 * @param eojeols - array of eojeols
-	 * @param sentiment - tag array for each morpheme
+	 * @param sentValue - tag array for each morpheme
 	 */
 	
-	 public SentimentEojeol(Eojeol[] eojeols, int sentiment) {
-		this.eojeols = eojeols;
-		this.sentiment = sentiment;
-		
+	 public SentimentEojeol(String seFeature, String seSentMorph, int sentValue, Eojeol[] eojeols) {
+		 this.seFeature = seFeature;
+		 this.seSentMorph = seSentMorph;
+		 this.sentValue = sentValue;
+		 this.eojeols = eojeols;
 	}
 	 public Object clone(){
 		 try{
@@ -67,6 +71,21 @@ public class SentimentEojeol implements Cloneable {
 		 }
 	 }
 	
+	 public String getSeSentMorph() {
+			return seSentMorph;
+			}
+	 
+	 public void setSeSentMorph(String seSentMorph) {
+		 this.seSentMorph = seSentMorph;
+		 }
+	 
+	 public String getSeFeature() {
+			return seFeature;
+			}
+	 
+	 public void setSeFeature(String seFeature) {
+		 this.seFeature = seFeature;
+		 }
 	
 	/**
 	 * It returns the morpheme list in the eojeol.
@@ -116,10 +135,10 @@ public class SentimentEojeol implements Cloneable {
 	}
 	/**
 	 * It returns the tag list for the eojeols in the eojeol.
-	 * @return sentiment list for eojeols
+	 * @return sentValue list for eojeols
 	 */
 	public int getSentiment() {
-		return sentiment;
+		return sentValue;
 	}
 	
 	/**
@@ -128,15 +147,15 @@ public class SentimentEojeol implements Cloneable {
 	 * @return morpheme tag on the given position
 	 */
 	/*public int getSentiment(int index) {
-		return sentiment[index];
+		return sentValue[index];
 	}*/
 	
 	/**
 	 * It sets the tag list for the eojeols of the eojeol.
-	 * @param sentiment - new sentiment list for the morpheme list
+	 * @param sentValue - new sentValue list for the morpheme list
 	 */
-	public void setSentiment(int sentiment) {
-		this.sentiment = sentiment;
+	public void setSentiment(int sentValue) {
+		this.sentValue = sentValue;
 	}
 	
 	/**
@@ -146,9 +165,9 @@ public class SentimentEojeol implements Cloneable {
 	 * @return index: the new tag was set up correctly, otherwise -1
 	 */
 	/*
-	 * public int setSentiment(int index, int sentiment) {
-		if (index >= 0 && index < sentiment.length) {
-			sentiment[index] = sentiment;
+	 * public int setSentiment(int index, int sentValue) {
+		if (index >= 0 && index < sentValue.length) {
+			sentValue[index] = sentValue;
 			return index;
 		} else {
 			return -1;
@@ -156,7 +175,7 @@ public class SentimentEojeol implements Cloneable {
 	}*/
 
 	/**
-	 * It returns a string that represents the eojeol with eojeols and sentiment.
+	 * It returns a string that represents the eojeol with eojeols and sentValue.
 	 * For example, 나/npp+는/jxc.
 	 */
 	@Override
@@ -166,7 +185,7 @@ public class SentimentEojeol implements Cloneable {
 			if (i != 0) {
 				str += "+";
 			}
-			str += eojeols[i] + "/" + sentiment;
+			str += eojeols[i] + "/" + sentValue;
 		}
 		return str;
 	}

@@ -19,7 +19,7 @@ public class DictionaryReader {
 		
 	}
 	public void init() throws UnsupportedEncodingException, FileNotFoundException, IOException{
-		sentimentDic.readDic(".\\data\\kE\\dic_sentiment.txt");
+		sentimentDic.readDic(".\\data\\kE\\dic_sentiment_value.txt");
 		VACor.readDic(".\\data\\kE\\dic_correction_verb_adjective.txt");
 		nounCor.readDic(".\\data\\kE\\dic_correction_noun.txt");
 	}

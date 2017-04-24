@@ -24,22 +24,27 @@ public class OpinionMiningProcess {
 	public SentimentEojeol se = null;
 	
 	public SentimentEojeol[] seArray = null;
-
+	
 	public int seNum = 0;
 	
 	public int sentiment = 0;
 	
-	String[] morphemes = null;
+	String morpheme = null;
 	
-	String[] tags = null;
+	String[] tag = null;
 	
-	Eojeol[] eojeol = new Eojeol[30];
+	Eojeol[] eojeol = null;//new Eojeol[30];
+	
+	String seFeature = null;
+	
+	String seSentWord = null;
 	
 	private Eojeol[] tmpEojeol = null;
 	
-	private int tmpSentiment = 0;
-	
 	public static int extCnt = 0;
+	
+	public int eojeolArraySize = 0;
+	
 	
 	public OpinionMiningProcess(){
 		patternAnalyzer = new SentimentAnalyzer();
@@ -48,22 +53,31 @@ public class OpinionMiningProcess {
 	/**
 	 * 형태소 분석이 된 문장들을 한 문장씩 불러옵니다. 
 	 */
-	public void readSentence(LinkedList<Sentence> resultList){
-	
-		int rSize = resultList.size() * 2;
+	public SentimentEojeol[] readSentence(LinkedList<Sentence> sentenceList){
 		
-		seArray = new SentimentEojeol[rSize];
-		for(int i = 0 ; i < rSize; i++){
-			seArray[i] = new SentimentEojeol( null, 0 );
+		//어절과 감정수치를 담는 배열의 크기를 할당하기위해 (전체 문장의 어절 수 / 5)만큼 배열의 크기를 할당한다.
+		for (Sentence s : sentenceList) {
+			eojeolArraySize += s.getEojeols().length;
 		}
-		for (Sentence s : resultList) {
-			featureExtract(s);
-		}
-		output();
+		eojeolArraySize = eojeolArraySize / 3;
+		
+		seArray = new SentimentEojeol[eojeolArraySize];
+		
+		for(int i = 0 ; i < eojeolArraySize; i++){
+			seArray[i] = new SentimentEojeol( null, null , 0, null);
+			}
+			for (Sentence s : sentenceList) {
+				featureExtract(s);
+			}
+			output();
+		
+		
+		return seArray;
 	}
+	
 		public void featureExtract(Sentence s){
 			
-			String[] feature = {"가격", "가격대", "사용법", "조절", "사용", "조작", "소음", "소리", "성능", "가성비", "가습량", "분무량", "분사량", "디자인", "가습" ,"가습력","소리", "모양", "청소", "관리", "세척", "색깔", "기능", "용량", "내구성", "향"};
+			String[] feature = {"가격", "가격대", "사용법", "조절", "사용", "조작", "소음", "소리", "성능", "가성비", "가습량", "분무량", "분사량", "디자인", "가습" ,"가습력", "모양", "청소", "관리", "세척", "색깔", "기능", "용량", "내구성"};
 
 			Eojeol[] eojeolArray;
 			
@@ -72,13 +86,13 @@ public class OpinionMiningProcess {
 		
 			//속성이 들어있는 문장을 찾는다
 			for(int i = 0; i < feature.length; i++){
-				for (int fNum = 0; fNum < eojeolArray.length; fNum++) {
-					String[] morphemes = eojeolArray[fNum].getMorphemes();
+				for (int fIndex = 0; fIndex < eojeolArray.length; fIndex++) {
+					String[] morphemes = eojeolArray[fIndex].getMorphemes();
 					for (int k = 0; k < morphemes.length; k++){
 						//속성과 문장속 단어가 일치
 						if(feature[i].equals(morphemes[k])){
 						//패턴분석 , 패턴분석 결과를 se객체에 리턴한다.
-							se = patternAnalyzer.patternAnalyze(eojeolArray,fNum);
+							se = patternAnalyzer.patternAnalyze(eojeolArray,fIndex);
 							if(se != null){
 								tmpEojeol = new Eojeol[se.length+1];
 								for(int a=0; a < se.length+1; a++){
@@ -90,8 +104,10 @@ public class OpinionMiningProcess {
 								tmpEojeol[a].setTags(se.getEojeol(a).getTags());
 								}
 								//seArray배열에 어절과 감정수치 저장
-								seArray[seNum].setEojeols(tmpEojeol);
-								seArray[seNum++].setSentiment(se.getSentiment());
+								seArray[seNum].setSeFeature(se.getSeFeature());
+								seArray[seNum].setSeSentMorph(se.getSeSentMorph());
+								seArray[seNum].setSentiment(se.getSentiment());
+								seArray[seNum++].setEojeols(tmpEojeol);
 								se = null;
 							}
 						}
@@ -101,48 +117,64 @@ public class OpinionMiningProcess {
 				if(i == feature.length - 1)
 					return;
 			}
-		}	
+		}
+
 		/**
 		 * 어절과 수치만을 따로 분리하여 출력할 수 있도록 하였다. 여기서  mysql과 연동 하면 될듯 하다.
 		 */
 		public void output(){
-			try{
-			FileWriter fileTest = new FileWriter("C:\\Users\\yong\\Desktop\\test\\analysis_output.txt");
-	
+//			try{
+//			FileWriter fileTest = new FileWriter("C:\\Users\\yong\\Desktop\\test\\analysis_output.txt");
 			System.out.println();
-			System.out.print("어절 및 수치출력 : ");
+			System.out.println("어절 및 수치출력 : ");
+			System.out.println("특징          / 감정단어      / 감정수치      / 어절");
+			
 		for(int i = 0; i < seNum; i++ ){
-			if(seArray[i] == null)
+			if(seArray[i].getEojeols() == null){
 				break;
+			}else if(seArray[i].getEojeols()[0] == null){
+				break;
+			}
+			
 				eojeol = seArray[i].getEojeols();
+				seFeature = seArray[i].getSeFeature();
+				seSentWord = seArray[i].getSeSentMorph();
+				sentiment = seArray[i].getSentiment();
+				
+				String strSent;
+				strSent = Integer.toString(sentiment);
+				System.out.print(seFeature);
+				System.out.print("\t");
+				System.out.print(seSentWord);
+				System.out.print("\t");
+				System.out.print(sentiment);
+				System.out.print("\t");
+
 			for (int k = 0; k < 4; k++) {
 				if(eojeol[k].getMorphemes() == null)
 					break;
 					
-				morphemes = eojeol[k].getMorphemes();
+				morpheme = eojeol[k].getMorpheme(0);
 				
-				if(morphemes[0]!=null){
-				System.out.print(morphemes[0]);
-				fileTest.write(morphemes[0]);
-				fileTest.write(" ");
+				if(morpheme!=null){
+				System.out.print(morpheme);
+//				fileTest.write(morpheme);
+//				fileTest.write(" ");
 				}
 			}
-			sentiment = seArray[i].getSentiment();
-			String strSent;
-			strSent = Integer.toString(sentiment);
-			System.out.print(sentiment);
-			System.out.print("  ");
-			fileTest.write(strSent);
-			fileTest.write("\t");
+			System.out.println();
+			//System.out.print("  ");
+			//fileTest.write(strSent);
+			//fileTest.write("\t");
 			
 		}
+			/*
 		fileTest.close();
 			}catch(FileNotFoundException e){
 				e.printStackTrace();
 			}catch(IOException e){
 				e.printStackTrace();
-			}
-		System.out.println();
+			}*/
 		
 		//긍정, 중립, 부정 수치를 각각 합하여 점수로 보여준다.
 		int posSum = 0;
@@ -152,7 +184,7 @@ public class OpinionMiningProcess {
 			sentiment = seArray[i].getSentiment();
 			if(sentiment == 1)
 			posSum += 1;
-			else if(sentiment == 0){
+			else if(sentiment == 2){
 				netSum += 1;
 			}else if(sentiment == -1){
 				negSum += 1;

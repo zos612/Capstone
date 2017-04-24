@@ -52,12 +52,14 @@ public class SpecificPOSExtractor implements PosProcessor {
 	public Sentence doProcess(Sentence st) {
 		String[] tags;
 		String[] morphemes;
+		Eojeol[] eojeolSet;
 		int eLength = st.getEojeols().length;
+		//OpinionMiningProcess.eojeolArraySize++;
 		
-		Eojeol[] eojeolSet = new Eojeol[st.getEojeols().length + 1];
+		/*= new Eojeol[st.getEojeols().length + 1];
 		for (int a = 0; a < eLength + 1 ; a++){
 			eojeolSet[a] = new Eojeol(null,null);
-		}
+		}*/
 		eojeolSet = st.getEojeols();
 		for (int i = 0; i < eojeolSet.length; i++) {
 			morphemes = eojeolSet[i].getMorphemes();
@@ -65,37 +67,40 @@ public class SpecificPOSExtractor implements PosProcessor {
 			Morphemes.clear();
 			Tags.clear();
 			//보통명사  NC, 고유명사  NQ, 대명사  NP, 동사 PV, 형용사 PA, 보조용언 PX, 부사 MA
-			for (int j = 0; j < tags.length; j++) {
-				//char c = tags[j].charAt(0);
-				String c = tags[j];
+			//for (int j = 0; j < tags.length; j++) {
+				String c = tags[0];
 				//각 형태소를 보정된 단어 사전에서 찾아 보정시킵니다.
 				if (c.equals("NC")) {
-					Morphemes.add(morphemes[j]);
-					Tags.add(tags[j]);
+					Morphemes.add(morphemes[0]);
+					Tags.add(tags[0]);
 				}else if (c.equals("NQ")) {
-					Morphemes.add(morphemes[j]);
-					Tags.add(tags[j]);
+					Morphemes.add(morphemes[0]);
+					Tags.add(tags[0]);
 				}else if (c.equals("NP")) {
-					Morphemes.add(morphemes[j]);
-					Tags.add(tags[j]);
+					Morphemes.add(morphemes[0]);
+					Tags.add(tags[0]);
 				}else if (c.charAt(0)=='P') {
-					Morphemes.add(morphemes[j]);
-					Tags.add(tags[j]);
+					Morphemes.add(morphemes[0]);
+					Tags.add(tags[0]);
 				}else if (c.equals("MA")) {
-					Morphemes.add(morphemes[j]);
-					Tags.add(tags[j]);
+					Morphemes.add(morphemes[0]);
+					Tags.add(tags[0]);
 				}else if (c.equals("SF")) {
 					Morphemes.add(null);
-						Tags.add(tags[j]);
-				}else if(j == 0){
+						Tags.add(tags[0]);
+				}else{
 					Morphemes.add(null);
 					Tags.add(null);
 				}
+				/*else if(j == 0){
+					Morphemes.add(null);
+					Tags.add(null);
+				}*/
 				/*else if (c.equals("F")) {
 					Morphemes.add(morphemes[j]);
 					Tags.add("NC");
 				}*/
-			}
+			
 			eojeolSet[i].setMorphemes(Morphemes.toArray(new String[0]));
 			eojeolSet[i].setTags(Tags.toArray(new String[0]));
 		}
