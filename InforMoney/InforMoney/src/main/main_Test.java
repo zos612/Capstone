@@ -73,6 +73,7 @@ public class main_Test {
 			//Document doc = Jsoup.connect("http://shopping.naver.com/detail/detail.nhn?nv_mid=6726447005&section=review").get();//timeout(60000).
 			Document doc = Jsoup.connect("http://shopping.naver.com/detail/detail.nhn?nv_mid=10348680585&cat_id=50002540&frm=NVSCTAB&query=%EA%B0%80%EC%8A%B5%EA%B8%B0").get();
 			
+			//Document doc = Jsoup.connect("http://shopping.naver.com/detail/detail.nhn?nv_mid=6004840565&cat_id=50002540&frm=NVSHATC&query=%EA%B0%80%EC%8A%B5%EA%B8%B0").get();
 			//지정한 url에서 select하여 원하는 데이터만 추출한다. 참고로 div.atc는 
 			Elements titles = doc.select("div.atc");
 			
@@ -88,7 +89,7 @@ public class main_Test {
 				
 				String document = e.text();
 			
-				//8패턴 테스트 문장`
+				//8패턴 테스트 문장
 				//String document = "디자인이 예쁘다. 디자인이 정말 예쁘다. 디자인이 정말 만족함 . 디자인이 완전 만족. 예쁜 디자인. 세련된 디자인. 너무 예쁜 디자인. 정말 세련된 디자인. ";
 				workflow.analyze(document);
 				

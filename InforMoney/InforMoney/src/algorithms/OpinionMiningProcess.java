@@ -59,7 +59,7 @@ public class OpinionMiningProcess {
 		for (Sentence s : sentenceList) {
 			eojeolArraySize += s.getEojeols().length;
 		}
-		eojeolArraySize = eojeolArraySize / 3;
+		eojeolArraySize = eojeolArraySize / 2 + 1;
 		
 		seArray = new SentimentEojeol[eojeolArraySize];
 		

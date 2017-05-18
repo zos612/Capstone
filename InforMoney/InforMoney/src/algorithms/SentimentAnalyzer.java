@@ -38,6 +38,15 @@ public class SentimentAnalyzer {
 	public final static int NN_PATTERN = 6;
 	public final static int ZVN_PATTERN = 7;
 	public final static int ZNN_PATTERN = 8;
+	public final static int ZV_PATTERN = 9;
+	public final static int ZNV_PATTERN = 10;
+	public final static int NNV_PATTERN = 11;
+	public final static int NVV_PATTERN = 12;
+	public final static int VNV_PATTERN = 13;
+	public final static int VNN_PATTERN = 14;
+
+
+
 
 
 	public int patternNum = 0;

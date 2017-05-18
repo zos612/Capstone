@@ -45,9 +45,9 @@ public class SpiderLeg {
 				 int indexOfLast = href.indexOf("target");
 				 System.out.println("URL : " + BasicHref+href.substring(indexOfFirst,indexOfLast-2));
 				 System.out.println();
-				 reviewURL = BasicHref+href.substring(indexOfFirst,indexOfLast);
-				 Document reviewDoc = Jsoup.connect(reviewURL).get();//力前 府轰
-				 Elements review_detail = reviewDoc.select("ul.lst_review div.atc_area div.atc");
+				 //reviewURL = BasicHref+href.substring(indexOfFirst,indexOfLast);
+				 //Document reviewDoc = Jsoup.connect(reviewURL).get();//力前 府轰
+				 //Elements review_detail = reviewDoc.select("ul.lst_review div.atc_area div.atc");
 					//ul._review_list  div.atc_area div.atc
 					
 					for(Element l : review_detail){
