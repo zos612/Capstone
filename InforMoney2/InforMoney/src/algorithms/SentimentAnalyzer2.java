@@ -1,5 +1,6 @@
 package algorithms;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -17,19 +18,21 @@ public class SentimentAnalyzer2 {
 	
 	private LinkedList<String> tagList = null;
 	
-	/**
+	public ArrayList<SentimentEojeol> seArray = null;
+	
+	/*
 	 * morphM1, morphM2는 각각  feature와 -1, -2만큼 떨어진 어절을 저장한다.
 	 * morphP1, morphP2는 각각  feature와 +1, +2만큼 떨어진 어절을 저장한다.
 	 * tagM1, tagM2, tagP1, tagP2도 같은 원리다.
 	 */
 	private String[] morphM1 = new String[1];
-	private String tagM1;
+	private String tagM1 = null;
 	private String[] morphM2 = new String[1];
-	private String tagM2;
+	private String tagM2 = null;
 	private String[] morphP1 = new String[1];
-	private String tagP1;
+	private String tagP1 = null;
 	private String[] morphP2 = new String[1];
-	private String tagP2;
+	private String tagP2 = null;
 
 	
 	//private int arrayNum = 0;
@@ -55,7 +58,7 @@ public class SentimentAnalyzer2 {
 	public int seValue = 0; //se에 넣을 감정수치
 	public String seSentWord = null; //se에 넣을 감정단어
 	public String seFeature = null; //se에 넣을 특징
-	Eojeol[] seArray; //se에 넣을 어절배열
+	Eojeol[] seMorphArray; //se에 넣을 어절배열
 	
 	String[] morpheme = null; //어절
 	String[] tag = null; //태그
@@ -65,7 +68,7 @@ public class SentimentAnalyzer2 {
 	public int arrayNum = 0;
 	
 	Eojeol[] morphArray;
-	Eojeol[] morphArrayCP;
+
 	
 
 	
@@ -83,13 +86,16 @@ public class SentimentAnalyzer2 {
 	
 	private Integer IntseValue;
 	
+	
+	
 	public SentimentAnalyzer2(){
 		morphList = new LinkedList<String>();
 		tagList = new LinkedList<String>();
 		neutWordAnalyzer = new NeutralityWordAnalyzer();
+		seArray = new ArrayList<SentimentEojeol>();
 	}
 	
-	public SentimentEojeol patternAnalyze(Eojeol[] morphArray, int fIndex, String categoryCurrent){
+	public ArrayList<SentimentEojeol> patternAnalyze(Eojeol[] morphArray, int fIndex, String categoryCurrent){
 		check = 0;
 		mKey = 0;
 		pKey = 0;
@@ -115,15 +121,12 @@ public class SentimentAnalyzer2 {
 					this.morphArray = morphArray;
 				}
 				
-				morphArrayCP = morphArray.clone();
+				//morphArray = morphArray.clone();
 		/*morphM1[0] = null;
 		morphM2[0] = null;
 		morphP1[0] = null;
 		morphP2[0] = null;*/
-		/*tagM1 = null;
-		tagM2 = null;
-		tagP1 = null;
-		tagP2 = null;*/
+		
 		
 		
 		/**
@@ -134,37 +137,46 @@ public class SentimentAnalyzer2 {
 		if(fIndex >= 1){
 			if(morphArray[fIndex-1].getMorphemes()[0] != null){
 				mKey = 1;
-				morphM1 = morphArrayCP[fIndex-1].getMorphemes();
-				tagM1 =  morphArrayCP[fIndex-1].getTag(0);
+				morphM1 = morphArray[fIndex-1].getMorphemes();
+				tagM1 =  morphArray[fIndex-1].getTag(0);
+				
+				if(fIndex >= 2 && check != 1 ){
+					if(morphArray[fIndex-2].getMorphemes()[0] != null){
+						mKey = 2;
+						morphM2 = morphArray[fIndex-2].getMorphemes();
+						tagM2 = new String(morphArray[fIndex-2].getTag(0));
+					}
+				}
 			}
+			
 		}
 		/**
 		 * feature의 위치가 -2이하인 경우 fIndex-2위치의 어절이 존재하는지 확인한다. 또한 fIndex-2위치의 어절이 null인지 확인 
 		 * fIndex-2위치의 어절과 태그를 변수에 저장한다.
 		 */
-		if(fIndex >= 2 && check != 1 ){
-			if(morphArrayCP[fIndex-2].getMorphemes()[0] != null){
+		/*if(fIndex >= 2 && check != 1 ){
+			if(morphArray[fIndex-2].getMorphemes()[0] != null){
 				mKey = 2;
-				morphM2 = morphArrayCP[fIndex-2].getMorphemes();
-				tagM2 = new String(morphArrayCP[fIndex-2].getTag(0));
+				morphM2 = morphArray[fIndex-2].getMorphemes();
+				tagM2 = new String(morphArray[fIndex-2].getTag(0));
 			}
-		}
+		}*/
 		/**
 		 * fIndex+1위치의 어절이 null인지 확인 
 		 * fIndex+1위치의 어절과 태그를 변수에 저장한다.
 		 */
-		if(morphArrayCP[fIndex+1].getMorphemes()[0] != null){
+		if(morphArray[fIndex+1].getMorphemes()[0] != null){
 			pKey = 1;
-			morphP1 = morphArrayCP[fIndex+1].getMorphemes();
-			tagP1 = new String(morphArrayCP[fIndex+1].getTag(0));
+			morphP1 = morphArray[fIndex+1].getMorphemes();
+			tagP1 = new String(morphArray[fIndex+1].getTag(0));
 		}
 		
-		if(morphArrayCP[fIndex+1].getMorphemes()[0] != null){
-			if(morphArrayCP[fIndex+2].getMorphemes()[0] != null)
+		if(morphArray[fIndex+1].getMorphemes()[0] != null){
+			if(morphArray[fIndex+2].getMorphemes()[0] != null)
 			{
 				pKey = 2;
-				morphP2 = morphArrayCP[fIndex+2].getMorphemes();
-				tagP2 = new String(morphArrayCP[fIndex+2].getTag(0));
+				morphP2 = morphArray[fIndex+2].getMorphemes();
+				tagP2 = new String(morphArray[fIndex+2].getTag(0));
 			}
 		}
 			if(pKey >= 1 && check != 1){
@@ -281,12 +293,13 @@ public class SentimentAnalyzer2 {
 			//OpinionMiningProcess.analyzing = false;
 			if(check == 1)
 				print();
-			
-			//감정단어가 비어있으면 의미가 없으므로 출력하지 않는다.
-			if(seSentWord == null)
-				return null;
-			
-			return se;
+
+			tagM1 = null;
+			tagM2 = null;
+			tagP1 = null;
+			tagP2 = null;
+
+			return seArray;
 		}
 		
 	
@@ -479,17 +492,18 @@ public class SentimentAnalyzer2 {
 			end = fIndex + 2;
 		}
 		//IntseValue = new Integer(seValue);
+		//단어의 감정 수치를 입력
 		neutWordAnalyzer.setSentValue(seValue);
 		if(seSentWord != null){
-			neutWordAnalyzer.conn(categoryCurrent, featureCurrent, seSentWord);
+			neutWordAnalyzer.anlyze(categoryCurrent, featureCurrent, seSentWord);
 			seValue = neutWordAnalyzer.getSentValue();
 		}
 	}
 	public void print(){
 		
-		seArray = new Eojeol[end - start + 1];
+		seMorphArray = new Eojeol[end - start + 1];
 		for(int i = 0 ; i < end - start + 1 ; i++){
-			seArray[i] = new Eojeol(null,null);
+			seMorphArray[i] = new Eojeol(null,null);
 		}
 		
 		System.out.print("{ ");
@@ -510,12 +524,18 @@ public class SentimentAnalyzer2 {
 				
 			System.out.print(", ");
 			
-			seArray[k-start].setMorphemes(morphList.toArray(new String[0]));
-			seArray[k-start].setTags(tagList.toArray(new String[0]));
+			seMorphArray[k-start].setMorphemes(morphList.toArray(new String[0]));
+			seMorphArray[k-start].setTags(tagList.toArray(new String[0]));
 		}
 		//seValue = IntseValue;
-		se = new SentimentEojeol(seFeature, seSentWord, seValue, seArray);
+		se = new SentimentEojeol(seFeature, seSentWord, seValue, seMorphArray);
 		se.length = end - start;
+		
+		//감정단어가 비어있으면 의미가 없으므로 출력하지 않는다.
+				if(seSentWord != null){
+					//seArray배열에 어절과 감정수치 저장
+					seArray.add(se);
+				}
 		
 		System.out.print("} ");
 		System.out.print("-> ");

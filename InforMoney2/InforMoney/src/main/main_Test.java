@@ -17,6 +17,7 @@ along with JHanNanum.  If not, see <http://www.gnu.org/licenses/>   */
 
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -55,38 +56,69 @@ public class main_Test {
 		
 		DictionaryReader dictionaryReader = null;
 		
-		opinionMining = new OpinionMiningProcess();
+		//SentimentDocument sentDoc = null;
+		
+		Output2 output = null;
+		
+		
 		
 		dictionaryReader = new DictionaryReader();
 		
-		Output output = null;
+		//sentDoc = new SentimentDocument();
 		
-		output = new Output();
+		output = new Output2();
+		
 
-		ArrayList<SentimentEojeol[]> resultList = null;
+		/*ArrayList<SentimentEojeol[]> resultList = null;
 		
-		resultList = new ArrayList<SentimentEojeol[]>();
+		resultList = new ArrayList<SentimentEojeol[]>();*/
+		
+		ArrayList<ArrayList<SentimentEojeol>> resultList = null;
+		
+		resultList = new ArrayList<ArrayList<SentimentEojeol>>();
+		
+		SentimentEojeol[] sentDoc = null;
+		
 		
 		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
 		
+		String orgUrl = null;
 		try {
+
 			//원하는 네이버쇼핑 리뷰 url입력
+			orgUrl = "http://shopping.naver.com/detail/detail.nhn?nv_mid=6726447005&section=review";
 			//Document doc = Jsoup.connect("http://shopping.naver.com/detail/detail.nhn?nv_mid=6726447005&section=review").get();//timeout(60000).
-			Document doc = Jsoup.connect("http://shopping.naver.com/detail/detail.nhn?nv_mid=10348680585&cat_id=50002540&frm=NVSCTAB&query=%EA%B0%80%EC%8A%B5%EA%B8%B0").get();
+			//Document doc = Jsoup.connect("url").get();
 			
 			//지정한 url에서 select하여 원하는 데이터만 추출한다. 참고로 div.atc는 
-			Elements titles = doc.select("div.atc");
+			
 			
 			dictionaryReader.init();
 			/* Activate the work flow in the thread mode */
 			workflow.activateWorkflow(true);
 			
-			for(int a = 0; a < 19; a++){
+			int cntPage;
+			int cnt;
+			/*int arrayCnt = 0;
+			for(cntPage = 0 ;cntPage < 2 ;cntPage++){
+				for(cnt = 0; cnt < 19; cnt++){
+					arrayCnt++;
+				}
+			}
+*/				ArrayList<SentimentEojeol> seArray = new ArrayList<SentimentEojeol>();
+
+			String model = "네오티즌 포그링 개인용 미니 USB 청정가습기";
+			String categoryCurrent = "가습기";
+			for(cntPage = 1;cntPage < 5 ; cntPage++){
+				String url = orgUrl + "&page=" + cntPage;
+				Document doc = Jsoup.connect(url).get();
+				Elements titles = doc.select("div.atc");
+			for(cnt = 0; cnt < 5; cnt++){
+				
+				
 			//선택한 url의 n번째 리뷰를 가져온다
-				Element e = titles.get(a);
-				
-				
-				String categoryCurrent = "가습기";
+				Element e = titles.get(cnt);
+
 				/* Analysis using the work flow */
 				
 				String document = e.text();
@@ -100,17 +132,28 @@ public class main_Test {
 				workflow.analyze(document);
 				
 				System.out.print("리뷰내용 : ");
+				
 				System.out.println(document);
 				
 				LinkedList<Sentence> sentenceList = workflow.getResultOfDocument(new Sentence(0, 0, false));
-				//System.out.println(resultList.getFirst());
-				//Sentence resultList = workflow.getResultOfSentence(new Sentence(0, 0, false));
-				//System.out.println(resultList);
+				
+				//분석 결과를 참조
+				//seArray = opinionMining.readSentence(sentenceList, categoryCurrent);
+				//seArray = opinionMining.readSentence(sentenceList, categoryCurrent).getSentDoc();
+				//sentDoc.setSentDoc(opinionMining.readSentence(sentenceList, categoryCurrent)); 
+				
+				//sentDoc.setSentDoc(seArray);
+				//resultList.add(sentDoc.getSentDoc());
+				
+				opinionMining = new OpinionMiningProcess();
 				
 				resultList.add(opinionMining.readSentence(sentenceList, categoryCurrent));
 				
+				//seArray.clear();
+				opinionMining = null;
+				}
 			}
-			output.output(resultList);
+			output.output(resultList , model);
 			
 			workflow.close();
 			
@@ -122,5 +165,27 @@ public class main_Test {
 		/* Shutdown the work flow */
 		workflow.close();  	
 	}
+	
+	/*void getProductReview(String url) throws IOException{
+			
+	    	int cnt1;
+	    	int cnt2=1;
+	    	
+	    	
+	    	for(cnt1 = 1; cnt1<=100 ; cnt1++){
+	    		url = url + "&page="+cnt1;
+			Document doc = Jsoup.connect(url).get();
+			//Document doc_query = Jsoup.connect(query).get();
+			
+			Elements scraping = doc.select("div.atc");
+			
+			for(Element e : scraping){
+			System.out.println(cnt2+e.text());
+			cnt2++;
+			}
+		
+    	}
+    	
+	}*/
 }
 	

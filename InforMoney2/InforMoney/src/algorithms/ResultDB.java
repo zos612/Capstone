@@ -1,7 +1,7 @@
 package algorithms;
 import java.sql.*;
 
-public class MySQLConn {
+public class ResultDB {
 
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
 	static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/informoney";
@@ -17,11 +17,13 @@ public class MySQLConn {
 			
 			Class.forName(JDBC_DRIVER);
 			conn = DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
-			System.out.println("\n- MySQL Connection OK");
+			//System.out.println("\n- MySQL Connection OK");
 			stmt = conn.createStatement();
-			
-			int rowNum =stmt.executeUpdate("insert se (feature, sentWord, sentValue, word1, word2, word3, word4) values('" + 
-			feature + "', '" + sentWord + "', '" + sentValue + "', '" + word1 + "', '" + word2 + "', '" + word3 + "', '" + word4 + "');");
+			String sql = "delete from se"; 
+			stmt.executeUpdate(sql); 
+			sql = "insert se (feature, sentWord, sentValue, word1, word2, word3, word4) values('" + 
+					feature + "', '" + sentWord + "', '" + sentValue + "', '" + word1 + "', '" + word2 + "', '" + word3 + "', '" + word4 + "')";
+			int rowNum =stmt.executeUpdate(sql);
 			
 			stmt.close();
 			conn.close();
@@ -42,7 +44,7 @@ public class MySQLConn {
 				se.printStackTrace();
 			}
 		}
-		System.out.println("\n\n- MySQL Connection Close");
+		//System.out.println("\n\n- MySQL Connection Close");
 	}
 	
 	/*public void insert(String Feature, String SentWord, int SentValue, String word1, String word2, String word3, String word4){

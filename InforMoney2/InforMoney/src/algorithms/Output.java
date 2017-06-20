@@ -6,7 +6,7 @@ import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 
 public class Output {
 	
-	MySQLConn db;
+	seDB db;
 	
 	Eojeol[] eojeol = null;
 	String seFeature = null;
@@ -18,7 +18,7 @@ public class Output {
 	String word4 = null;
 	
 	public Output(){
-		db = new MySQLConn();
+		db = new seDB();
 	}
 	
 	public void output(ArrayList<SentimentEojeol[]> resultList){

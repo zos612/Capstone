@@ -1,12 +1,17 @@
-package test;
+package algorithms;
 
+import algorithms.*;
 import java.util.ArrayList;
 
 import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 
 public class Output2 {
 	
-	MySQLConn db;
+	ArrayList<SentimentEojeol> seArray;
+	
+	public SentimentEojeol seTmp = null;
+	
+	seDB db;
 	
 	Eojeol[] eojeol = null;
 	String seFeature = null;
@@ -18,30 +23,39 @@ public class Output2 {
 	String word4 = null;
 	
 	public Output2(){
-		db = new MySQLConn();
+		db = new seDB();
 	}
 	
-	public void output(ArrayList<SentimentEojeol[]> resultList){
-		SentimentEojeol[] seArray;
+	public void output(ArrayList<ArrayList<SentimentEojeol>> resultList, String model){
+		
 		int rsSize;
 		int seLength;
 		int posSum = 0;
 		int netSum = 0;
 		int negSum = 0;
 		rsSize = resultList.size();
+		db.initDB();
 		
 		System.out.println();
 				System.out.println("감정 분석 결과 ");
 				System.out.println("특징          / 감정단어     / 감정수치     / 어절");
 		for(int cnt = 0 ; cnt < rsSize ; cnt++){
 			seArray = resultList.get(cnt);
-			seLength = seArray.length;
+			seLength = seArray.size();
+			
+			
+			/*seTmp = seArray.get(i);
+			eojeol = seTmp.getEojeols();
+			seFeature = seTmp.getSeFeature();
+			seSentWord = seTmp.getSeSentMorph();
+			sentiment = seTmp.getSentiment();*/
+			
 			for(int i = 0; i < seLength ; i++){
-			if(seArray[i].getEojeols() != null){
-				eojeol = seArray[i].getEojeols();
-				seFeature = seArray[i].getSeFeature();
-				seSentWord = seArray[i].getSeSentMorph();
-				seSentValue = seArray[i].getSentiment();
+				seTmp = seArray.get(i);
+				eojeol = seTmp.getEojeols();
+				seFeature = seTmp.getSeFeature();
+				seSentWord = seTmp.getSeSentMorph();
+				seSentValue = seTmp.getSentiment();
 				
 				if(seSentValue == 1)
 					posSum += 1;
@@ -82,10 +96,10 @@ public class Output2 {
 						}
 						
 					}
-				//db.conn(seFeature, seSentWord, seSentValue, word1, word2, word3, word4);
+				db.insertSe(seFeature, seSentWord, seSentValue, word1, word2, word3, word4);
 				
 				System.out.println();
-				}
+				
 			}
 		}
 		System.out.print("긍정점수  : ");
@@ -96,6 +110,6 @@ public class Output2 {
 		System.out.print(" ");
 		System.out.print("부정점수  : ");
 		System.out.println(negSum);
-		
+		db.insertTotalScore(model, posSum, netSum, negSum);
 	}
 }

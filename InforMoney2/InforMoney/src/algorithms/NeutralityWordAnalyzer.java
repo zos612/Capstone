@@ -31,7 +31,7 @@ public class NeutralityWordAnalyzer {
 		return this.sentValue;
 		}
 	
-	public void conn(String categoryCurrent, String featureCurrent, String sentWord) {
+	public void anlyze(String categoryCurrent, String featureCurrent, String sentWord) {
 
 		Connection conn = null;
 		Statement stmt = null;

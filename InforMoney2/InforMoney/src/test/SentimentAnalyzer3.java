@@ -143,7 +143,7 @@ public class SentimentAnalyzer3 {
 		 * feature의 위치가 -2이하인 경우 fIndex-2위치의 어절이 존재하는지 확인한다. 또한 fIndex-2위치의 어절이 null인지 확인 
 		 * fIndex-2위치의 어절과 태그를 변수에 저장한다.
 		 */
-		if(fIndex >= 2  ){
+		if(fIndex >= 2 && check != 1){
 			if(morphArrayCP[fIndex-2].getMorphemes()[0] != null){
 				mKey = 2;
 				morphM2 = morphArrayCP[fIndex-2].getMorphemes();
@@ -168,7 +168,7 @@ public class SentimentAnalyzer3 {
 				tagP2 = new String(morphArrayCP[fIndex+2].getTag(0));
 			}
 		}
-			if(pKey >= 1){
+			if(pKey >= 1 && check != 1){
 				//배열의  fIndex가 0인 경우 tagM1을 참조하면 널 포인터 에러가 나기 때문에 조건을 붙임
 				if(tagP1.charAt(0) == 'P'){
 					if(tagP2 != null && tagP2.charAt(0) == 'P'){
@@ -199,7 +199,7 @@ public class SentimentAnalyzer3 {
 					}*/
 				}
 				
-				if(pKey >= 2){
+				if(pKey >= 2 && check != 1){
 					if(tagP1.equals("MA") && tagP2.charAt(0)=='P'){
 						patternNum = NZV_PATTERN;
 						sentAnalyze();
@@ -228,7 +228,7 @@ public class SentimentAnalyzer3 {
 				}
 	//}
 			
-			if(mKey >= 1){// mKey가  1이면 feature의 배열 위치가 1 일때
+			if(mKey >= 1 && check != 1){// mKey가  1이면 feature의 배열 위치가 1 일때
 				/*if(mKey != 2){// mKey가  2이면 feature의 배열 위치가 1 일때
 					if(tagM1.charAt(0)=='P'){
 						patternNum = VN_PATTERN;
@@ -280,6 +280,8 @@ public class SentimentAnalyzer3 {
 				}*/
 				
 				}
+			if(check == 1)
+				print();
 			
 			return seArray;
 		}
@@ -473,7 +475,7 @@ public class SentimentAnalyzer3 {
 			start = fIndex - 1;
 			end = fIndex + 2;
 		}
-		print();
+		//print();
 		
 	}
 	public void print(){

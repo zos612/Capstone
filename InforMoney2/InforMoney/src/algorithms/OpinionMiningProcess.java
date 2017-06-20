@@ -24,7 +24,11 @@ public class OpinionMiningProcess {
 	
 	public SentimentEojeol se = null;
 	
-	public SentimentEojeol[] seArray = null;
+	public SentimentEojeol seTmp = null;
+	
+	public SentimentDocument sentDoc = null;
+	
+	public ArrayList<SentimentEojeol> seArray = null;
 	
 	public int seNum = 0;
 	
@@ -54,12 +58,14 @@ public class OpinionMiningProcess {
 	
 	public OpinionMiningProcess(){
 		patternAnalyzer = new SentimentAnalyzer2();
+		sentDoc = new SentimentDocument();
 	}
 	
 	/**
 	 * 형태소 분석이 된 문장들을 한 문장씩 불러옵니다. 
 	 */
-	public SentimentEojeol[] readSentence(LinkedList<Sentence> sentenceList, String categoryCurrent){
+	public ArrayList<SentimentEojeol> readSentence(LinkedList<Sentence> sentenceList, String categoryCurrent){
+		//SentimentDocument 자료형 임시
 		
 		this.categoryCurrent = categoryCurrent;
 		
@@ -69,19 +75,18 @@ public class OpinionMiningProcess {
 		}
 		// +1은 배열 크기가 3보다 작은 경우 eojeolArraySize가 0이 되는것을 방지
 		eojeolArraySize = ( eojeolArraySize / 3 ) + 1;
-		
-		seArray = new SentimentEojeol[eojeolArraySize];
-		
-		for(int i = 0 ; i < eojeolArraySize; i++){
-			seArray[i] = new SentimentEojeol( null, null , 0, null);
-			}
+	
 			for (Sentence s : sentenceList) {
 				featureExtract(s);
 			}
 			output();
+			
+			//sentDoc.setSentDoc(seArray);
 		
-		
-		return seArray;
+			//seArray = null;
+			
+		//return sentDoc;
+			return seArray;
 	}
 	
 		public void featureExtract(Sentence s){
@@ -102,25 +107,7 @@ public class OpinionMiningProcess {
 						if(feature[i].equals(morphemes[k])){
 						//패턴분석 , 패턴분석 결과를 se객체에 리턴한다.
 							//while(analyzing){
-								se = patternAnalyzer.patternAnalyze(eojeolArray,fIndex,categoryCurrent);
-								if(se != null){
-									tmpEojeol = new Eojeol[se.length+1];
-									for(int a=0; a < se.length+1; a++){
-									tmpEojeol[a] = new Eojeol();
-								}
-									//tmpEojeol에 se의 어절들을 복사
-									for(int a = 0; a < se.length; a++){
-									tmpEojeol[a].setMorphemes(se.getEojeol(a).getMorphemes());
-									tmpEojeol[a].setTags(se.getEojeol(a).getTags());
-									}
-									//seArray배열에 어절과 감정수치 저장
-									seArray[seNum].setSeFeature(se.getSeFeature());
-									seArray[seNum].setSeSentMorph(se.getSeSentMorph());
-									seArray[seNum].setSentiment(se.getSentiment());
-									seArray[seNum++].setEojeols(tmpEojeol);
-									se = null;
-								//}
-							}
+							seArray = patternAnalyzer.patternAnalyze(eojeolArray, fIndex, categoryCurrent);
 						}
 					}
 				}
@@ -140,17 +127,18 @@ public class OpinionMiningProcess {
 			System.out.println("어절 및 수치출력 : ");
 			System.out.println("특징          / 감정단어      / 감정수치      / 어절");
 			
-		for(int i = 0; i < seNum; i++ ){
-			if(seArray[i].getEojeols() == null){
+			
+			for(int i = 0; i < seArray.size(); i++ ){
+			/*if(seArray[i].getEojeols() == null){
 				break;
 			}else if(seArray[i].getEojeols()[0] == null){
 				break;
-			}
-			
-				eojeol = seArray[i].getEojeols();
-				seFeature = seArray[i].getSeFeature();
-				seSentWord = seArray[i].getSeSentMorph();
-				sentiment = seArray[i].getSentiment();
+			}*/
+				seTmp = seArray.get(i);
+				eojeol = seTmp.getEojeols();
+				seFeature = seTmp.getSeFeature();
+				seSentWord = seTmp.getSeSentMorph();
+				sentiment = seTmp.getSentiment();
 				
 				String strSent;
 				strSent = Integer.toString(sentiment);
@@ -179,6 +167,7 @@ public class OpinionMiningProcess {
 			//fileTest.write("\t");
 			
 		}
+			
 			/*
 		fileTest.close();
 			}catch(FileNotFoundException e){
@@ -191,8 +180,8 @@ public class OpinionMiningProcess {
 		int posSum = 0;
 		int netSum = 0;
 		int negSum = 0;
-		for(int i = 0; i < seNum ; i++){
-			sentiment = seArray[i].getSentiment();
+		for(int i = 0; i < seArray.size() ; i++){
+			sentiment = seTmp.getSentiment();
 			if(sentiment == 1)
 			posSum += 1;
 			else if(sentiment == 2){
@@ -201,6 +190,8 @@ public class OpinionMiningProcess {
 				negSum += 1;
 			}
 		}
+		//seTmp = null;
+		
 		System.out.print("긍정점수  : ");
 		System.out.print(posSum);
 		System.out.print(" ");
