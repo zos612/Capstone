@@ -98,7 +98,7 @@ public class Output2 {
 						}
 						
 					}
-				db.insertSe(seFeature, seSentWord, seSentValue, word1, word2, word3, word4);
+				db.insertSe(model,seFeature, seSentWord, seSentValue, word1, word2, word3, word4);
 				
 				System.out.println();
 				

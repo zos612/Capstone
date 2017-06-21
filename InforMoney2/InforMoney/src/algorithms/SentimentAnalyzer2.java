@@ -182,11 +182,11 @@ public class SentimentAnalyzer2 {
 			if(pKey >= 1 && check != 1){
 				//배열의  fIndex가 0인 경우 tagM1을 참조하면 널 포인터 에러가 나기 때문에 조건을 붙임
 				if(tagP1.charAt(0) == 'P'){
-					if(tagP2 != null && tagP2.charAt(0) == 'P'){
+					/*if(tagP2 != null && tagP2.charAt(0) == 'P'){
 							patternNum = NVV_PATTERN;
 							sentAnalyze();
 							check = 1;
-					}else if(tagM1 != null && tagM1.equals("MA")){
+					}else*/ if(tagM1 != null && tagM1.equals("MA")){
 							patternNum = ZNV_PATTERN;
 							sentAnalyze();
 							check = 1;
@@ -221,11 +221,11 @@ public class SentimentAnalyzer2 {
 						sentAnalyze();
 						check = 1;
 						}
-					else if(tagP1.charAt(0)=='N' && tagP2.charAt(0)=='N'){
+					/*else if(tagP1.charAt(0)=='N' && tagP2.charAt(0)=='N'){
 						patternNum = NNN_PATTERN;
 						sentAnalyze();
 						check = 1;
-						}
+						}*/
 					else if(tagP1.charAt(0)=='N' && tagP2.charAt(0)=='P'){
 						patternNum = NNV_PATTERN;
 						sentAnalyze();
@@ -253,11 +253,11 @@ public class SentimentAnalyzer2 {
 						}
 				}*/
 				if(tagM1.charAt(0) == 'P'){
-					if(tagP1 !=null && tagP1.charAt(0)=='N'){
+					/*if(tagP1 !=null && tagP1.charAt(0)=='N'){
 					patternNum = VNN_PATTERN;
 					sentAnalyze();
 					check = 1;
-					}else if(tagM2 != null && tagM2.equals("MA")){
+					}else*/ if(tagM2 != null && tagM2.equals("MA")){
 						patternNum = ZVN_PATTERN;
 						sentAnalyze();
 						check = 1;
@@ -350,7 +350,7 @@ public class SentimentAnalyzer2 {
 			start = fIndex;
 			end = fIndex + 3;
 		}
-		else if(patternNum == NNN_PATTERN){
+		/*else if(patternNum == NNN_PATTERN){
 			//명사인 감정단어가 감정수치 사전에 등록되 있으면 감정수치를 저장한다.
 				strSentValue = DictionaryReader.sentimentDic.get(morphP2[0]);
 			if(strSentValue != null){
@@ -364,7 +364,7 @@ public class SentimentAnalyzer2 {
 			}
 			start = fIndex;
 			end = fIndex + 3;
-		}
+		}*/
 		else if(patternNum == VN_PATTERN){
 			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
 			if(tempMorph != null){
@@ -448,7 +448,7 @@ public class SentimentAnalyzer2 {
 			start = fIndex;
 			end = fIndex + 3;
 		}
-		else if(patternNum == NVV_PATTERN){
+		/*else if(patternNum == NVV_PATTERN){
 			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
 			tempMorph = DictionaryReader.VACor.get(morphP2[0]);
 			if(tempMorph != null){
@@ -462,7 +462,7 @@ public class SentimentAnalyzer2 {
 
 			start = fIndex;
 			end = fIndex + 3;
-		}
+		}*/
 		else if(patternNum == VNV_PATTERN){
 			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
 			tempMorph = DictionaryReader.VACor.get(morphP1[0]);
@@ -478,7 +478,7 @@ public class SentimentAnalyzer2 {
 			start = fIndex - 1;
 			end = fIndex + 2;
 		}	
-		else if(patternNum == VNN_PATTERN){
+		/*else if(patternNum == VNN_PATTERN){
 			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
 			if(tempMorph != null){
 				morphM1[0] = tempMorph;
@@ -490,7 +490,7 @@ public class SentimentAnalyzer2 {
 			}
 			start = fIndex - 1;
 			end = fIndex + 2;
-		}
+		}*/
 		//IntseValue = new Integer(seValue);
 		//단어의 감정 수치를 입력
 		neutWordAnalyzer.setSentValue(seValue);

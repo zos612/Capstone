@@ -54,7 +54,7 @@ import test.OpinionMiningProcess2;
  * 
  * @author Sangwon Park (hudoni@world.kaist.ac.kr), CILab, SWRC, KAIST
  */
-public class main_Test2 {
+public class main {
 	
 	public static void main(String[] args) {
 		
@@ -96,9 +96,9 @@ public class main_Test2 {
 		
 		String orgUrl = null;
 		try {
-
-			String model = "미로 가습기 MIRO-NR08";
-			//String model = "miro";
+			//String model = "대우어플라이언스 DEH-C450";
+			//String model = "미로 가습기 MIRO-NR08";
+			String model = "아로미 GO-2099";
 			fis = new FileInputStream("reviews\\"+ model + ".txt");
 			//isr = new InputStreamReader(fis, "MS949");
 			isr = new InputStreamReader(fis, "UTF-8");

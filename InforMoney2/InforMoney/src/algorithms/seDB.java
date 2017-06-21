@@ -12,7 +12,7 @@ public class seDB {
 	Connection conn = null;
 	Statement stmt = null;
 		
-	public void insertSe(String feature, String sentWord, int sentValue, String word1, String word2, String word3, String word4) {
+	public void insertSe(String model ,String feature, String sentWord, int sentValue, String word1, String word2, String word3, String word4) {
 
 		try{
 			
@@ -20,7 +20,7 @@ public class seDB {
 			conn = DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
 			//System.out.println("\n- MySQL Connection OK");
 			stmt = conn.createStatement();
-			String sql = "insert se (feature, sentWord, sentValue, word1, word2, word3, word4) values('" + 
+			String sql = "insert se (model, feature, sentWord, sentValue, word1, word2, word3, word4) values('"+ model + "', '" + 
 					feature + "', '" + sentWord + "', '" + sentValue + "', '" + word1 + "', '" + word2 + "', '" + word3 + "', '" + word4 + "')";
 			int rowNum =stmt.executeUpdate(sql);
 			
