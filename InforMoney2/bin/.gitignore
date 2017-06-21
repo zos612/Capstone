@@ -1,4 +1,14 @@
-/main/
+/Crawling.class
+/DTO.class
+/IDparsing.class
+/ManipulateUrl.class
+/Spider.class
+/SpiderLeg.class
+/SpiderTest.class
 /algorithms/
 /backup/
+/insertDAO.class
+/kr/
+/main/
+/org/
 /test/

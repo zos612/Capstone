@@ -79,6 +79,7 @@ public class OpinionMiningProcess {
 			for (Sentence s : sentenceList) {
 				featureExtract(s);
 			}
+			if(seArray != null)
 			output();
 			
 			//sentDoc.setSentDoc(seArray);
@@ -127,46 +128,45 @@ public class OpinionMiningProcess {
 			System.out.println("어절 및 수치출력 : ");
 			System.out.println("특징          / 감정단어      / 감정수치      / 어절");
 			
-			
-			for(int i = 0; i < seArray.size(); i++ ){
-			/*if(seArray[i].getEojeols() == null){
-				break;
-			}else if(seArray[i].getEojeols()[0] == null){
-				break;
-			}*/
-				seTmp = seArray.get(i);
-				eojeol = seTmp.getEojeols();
-				seFeature = seTmp.getSeFeature();
-				seSentWord = seTmp.getSeSentMorph();
-				sentiment = seTmp.getSentiment();
-				
-				String strSent;
-				strSent = Integer.toString(sentiment);
-				System.out.print(seFeature);
-				System.out.print("\t");
-				System.out.print(seSentWord);
-				System.out.print("\t");
-				System.out.print(sentiment);
-				System.out.print("\t");
-
-			for (int k = 0; k < 4; k++) {
-				if(eojeol[k].getMorphemes() == null)
+				for(int i = 0; i < seArray.size(); i++ ){
+				/*if(seArray[i].getEojeols() == null){
 					break;
+				}else if(seArray[i].getEojeols()[0] == null){
+					break;
+				}*/
+					seTmp = seArray.get(i);
+					eojeol = seTmp.getEojeols();
+					seFeature = seTmp.getSeFeature();
+					seSentWord = seTmp.getSeSentMorph();
+					sentiment = seTmp.getSentiment();
 					
-				morpheme = eojeol[k].getMorpheme(0);
-				
-				if(morpheme!=null){
-				System.out.print(morpheme);
-//				fileTest.write(morpheme);
-//				fileTest.write(" ");
+					String strSent;
+					strSent = Integer.toString(sentiment);
+					System.out.print(seFeature);
+					System.out.print("\t");
+					System.out.print(seSentWord);
+					System.out.print("\t");
+					System.out.print(sentiment);
+					System.out.print("\t");
+	
+				for (int k = 0; k < 4; k++) {
+					if(eojeol[k].getMorphemes() == null)
+						break;
+						
+					morpheme = eojeol[k].getMorpheme(0);
+					
+					if(morpheme!=null){
+					System.out.print(morpheme);
+	//				fileTest.write(morpheme);
+	//				fileTest.write(" ");
+					}
 				}
+				System.out.println();
+				//System.out.print("  ");
+				//fileTest.write(strSent);
+				//fileTest.write("\t");
+				
 			}
-			System.out.println();
-			//System.out.print("  ");
-			//fileTest.write(strSent);
-			//fileTest.write("\t");
-			
-		}
 			
 			/*
 		fileTest.close();
@@ -180,14 +180,16 @@ public class OpinionMiningProcess {
 		int posSum = 0;
 		int netSum = 0;
 		int negSum = 0;
-		for(int i = 0; i < seArray.size() ; i++){
-			sentiment = seTmp.getSentiment();
-			if(sentiment == 1)
-			posSum += 1;
-			else if(sentiment == 2){
-				netSum += 1;
-			}else if(sentiment == -1){
-				negSum += 1;
+		if(seArray != null){
+			for(int i = 0; i < seArray.size() ; i++){
+				sentiment = seTmp.getSentiment();
+				if(sentiment == 1)
+				posSum += 1;
+				else if(sentiment == 2){
+					netSum += 1;
+				}else if(sentiment == -1){
+					negSum += 1;
+				}
 			}
 		}
 		//seTmp = null;

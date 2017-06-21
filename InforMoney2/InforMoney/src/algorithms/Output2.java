@@ -41,6 +41,8 @@ public class Output2 {
 				System.out.println("특징          / 감정단어     / 감정수치     / 어절");
 		for(int cnt = 0 ; cnt < rsSize ; cnt++){
 			seArray = resultList.get(cnt);
+			if(seArray == null)
+				continue;
 			seLength = seArray.size();
 			
 			

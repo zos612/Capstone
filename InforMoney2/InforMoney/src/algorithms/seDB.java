@@ -54,7 +54,7 @@ public class seDB {
 		stmt = conn.createStatement();
 		String sql = "insert totalScore (model, positive, negative, neutral) values('" + 
 				model + "', '" + positive + "', '" + negative + "', '" + neutral + "')";
-		int rowNum =stmt.executeUpdate(sql);
+		int rowNum = stmt.executeUpdate(sql);
 	}catch(SQLException se1){
 		se1.printStackTrace();
 	}catch(Exception ex){
@@ -112,6 +112,8 @@ public class seDB {
 			//System.out.println("\n- MySQL Connection OK");
 			stmt = conn.createStatement();
 			String sql = "delete from se"; 
+			stmt.executeUpdate(sql); 
+			sql = "delete from totalscore"; 
 			stmt.executeUpdate(sql); 
 		}catch(SQLException se1){
 			se1.printStackTrace();
