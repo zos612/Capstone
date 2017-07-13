@@ -1,3 +1,5 @@
+/kr/
+/org/
 /Crawling.class
 /DTO.class
 /IDparsing.class
@@ -8,7 +10,5 @@
 /algorithms/
 /backup/
 /insertDAO.class
-/kr/
 /main/
-/org/
 /test/

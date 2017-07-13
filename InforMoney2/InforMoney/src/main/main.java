@@ -66,7 +66,8 @@ public class main {
 		
 		Output2 output = null;
 		
-		
+		NeutralDB neutralDB = new NeutralDB();
+
 		dictionaryReader = new DictionaryReader();
 		
 		//sentDoc = new SentimentDocument();
@@ -91,6 +92,7 @@ public class main {
 		
 		String str;
 		
+		//neutralDB.neutralDB();
 		
 		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
 		
@@ -98,7 +100,8 @@ public class main {
 		try {
 			//String model = "대우어플라이언스 DEH-C450";
 			//String model = "미로 가습기 MIRO-NR08";
-			String model = "아로미 GO-2099";
+			//String model = "브리츠 BA-R9 SoundBar";
+			String model = "캔스톤 LX-C4 시그니처";
 			fis = new FileInputStream("reviews\\"+ model + ".txt");
 			//isr = new InputStreamReader(fis, "MS949");
 			isr = new InputStreamReader(fis, "UTF-8");
@@ -108,12 +111,9 @@ public class main {
 			/* Activate the work flow in the thread mode */
 			workflow.activateWorkflow(true);
 			
-			int cntPage;
-			int cnt;
-			
 				ArrayList<SentimentEojeol> seArray = new ArrayList<SentimentEojeol>();
 
-			String categoryCurrent = "가습기";
+			String categoryCurrent = "스피커";
 			
 			while((str = br.readLine()) != null){
 				if (str.equals("")) {

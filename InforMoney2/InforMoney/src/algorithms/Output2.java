@@ -112,6 +112,6 @@ public class Output2 {
 		System.out.print(" ");
 		System.out.print("부정점수  : ");
 		System.out.println(negSum);
-		db.insertTotalScore(model, posSum, netSum, negSum);
+		db.insertTotalScore(model, posSum, negSum, netSum);
 	}
 }
