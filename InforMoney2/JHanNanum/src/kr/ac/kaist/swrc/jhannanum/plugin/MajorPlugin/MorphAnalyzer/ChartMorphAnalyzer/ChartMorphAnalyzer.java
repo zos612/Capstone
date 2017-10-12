@@ -144,7 +144,7 @@ public class ChartMorphAnalyzer implements MorphAnalyzer {
 	@Override
 	public SetOfSentences morphAnalyze(PlainSentence ps) {
 		StringTokenizer st = new StringTokenizer(ps.getSentence(), " \t");
-		
+		//System.out.println("test: " + ps.toString());
 		String plainEojeol = null;
 		int eojeolNum = st.countTokens();
 		
@@ -159,10 +159,15 @@ public class ChartMorphAnalyzer implements MorphAnalyzer {
 		}
 		
 		SetOfSentences sos = new SetOfSentences(ps.getDocumentID(), ps.getSentenceID(),
-				ps.isEndOfDocument(), plainEojeolArray, eojeolSetArray);
+				ps.isEndOfDocument(), plainEojeolArray, eojeolSetArray, ps.getSentence()); //ps추가
 
 		sos = postProc.doPostProcessing(sos);
-
+		
+		/*ArrayList<Eojeol[]> gesa = sos.getEojeolSetArray();
+		
+		ArrayList<String> gpea = sos.getPlainEojeolArray();
+		
+		System.out.println("test: " + sos.getPlainEojeolArray().toString());*/
 		return sos;
 	}
 

@@ -1,6 +1,8 @@
 package algorithms;
 
 import algorithms.*;
+import database.*;
+
 import java.util.ArrayList;
 
 import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
@@ -11,11 +13,14 @@ public class Output2 {
 	
 	public SentimentEojeol seTmp = null;
 	
-	seDB db;
+	public ModelCheck modelCheck = null;
+	
+	public seDB db = null;
 	
 	Eojeol[] eojeol = null;
 	String seFeature = null;
 	String seSentWord = null;
+	String seSentence = null;
 	public int seSentValue = 0;
 	String word1 = null;
 	String word2 = null;
@@ -24,6 +29,7 @@ public class Output2 {
 	
 	public Output2(){
 		db = new seDB();
+		modelCheck = new ModelCheck();
 	}
 	
 	public void output(ArrayList<ArrayList<SentimentEojeol>> resultList, String model){
@@ -34,11 +40,11 @@ public class Output2 {
 		int netSum = 0;
 		int negSum = 0;
 		rsSize = resultList.size();
-		db.initDB();
+		//db.initDB();
 		
 		System.out.println();
 				System.out.println("감정 분석 결과 ");
-				System.out.println("특징          / 감정단어     / 감정수치     / 어절");
+				System.out.println("특징          / 감정단어     / 감정수치     / 어절		/문장");
 		for(int cnt = 0 ; cnt < rsSize ; cnt++){
 			seArray = resultList.get(cnt);
 			if(seArray == null)
@@ -58,6 +64,7 @@ public class Output2 {
 				seFeature = seTmp.getSeFeature();
 				seSentWord = seTmp.getSeSentMorph();
 				seSentValue = seTmp.getSentiment();
+				seSentence = seTmp.getSentence();
 				
 				if(seSentValue == 1)
 					posSum += 1;
@@ -73,6 +80,7 @@ public class Output2 {
 				System.out.print("\t");
 				System.out.print(seSentValue);
 				System.out.print("\t");
+	
 				
 				for (int k = 0; k < 4; k++) {
 					if(eojeol[k].getMorphemes() == null)
@@ -98,8 +106,10 @@ public class Output2 {
 						}
 						
 					}
-				db.insertSe(model,seFeature, seSentWord, seSentValue, word1, word2, word3, word4);
-				
+				System.out.print("\t\t");
+				System.out.print(seSentence);
+				//db.insertSe(model,seFeature, seSentWord, seSentValue, word1, word2, word3, word4, seSentence);
+				//modelCheck.insert(model);
 				System.out.println();
 				
 			}

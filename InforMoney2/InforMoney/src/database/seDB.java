@@ -1,10 +1,10 @@
-package algorithms;
+package database;
 import java.sql.*;
 
 public class seDB {
 
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/informoney?autoReconnect=true&useSSL=false";
+	static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/scrapy?autoReconnect=true&useSSL=false";
 
 	static final String USERNAME = "root";
 	static final String PASSWORD = "111111";
@@ -12,7 +12,7 @@ public class seDB {
 	Connection conn = null;
 	Statement stmt = null;
 		
-	public void insertSe(String model ,String feature, String sentWord, int sentValue, String word1, String word2, String word3, String word4) {
+	public void insertSe(String model ,String feature, String sentWord, int sentValue, String word1, String word2, String word3, String word4, String sentence) {
 
 		try{
 			
@@ -20,8 +20,8 @@ public class seDB {
 			conn = DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
 			//System.out.println("\n- MySQL Connection OK");
 			stmt = conn.createStatement();
-			String sql = "insert se (model, feature, sentWord, sentValue, word1, word2, word3, word4) values('"+ model + "', '" + 
-					feature + "', '" + sentWord + "', '" + sentValue + "', '" + word1 + "', '" + word2 + "', '" + word3 + "', '" + word4 + "')";
+			String sql = "insert se (model, feature, sentWord, sentValue, word1, word2, word3, word4, Sentence) values('"+ model + "', '" + 
+					feature + "', '" + sentWord + "', '" + sentValue + "', '" + word1 + "', '" + word2 + "', '" + word3 + "', '" + word4 + "', '" + sentence + "')";
 			int rowNum =stmt.executeUpdate(sql);
 			
 			stmt.close();
@@ -133,6 +133,7 @@ public class seDB {
 			}
 		}
 	}
+	
 	
 	
 }

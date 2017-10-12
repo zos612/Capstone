@@ -2,6 +2,7 @@ package algorithms;
 
 import java.util.ArrayList;
 
+import database.seDB;
 import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 
 public class Output {

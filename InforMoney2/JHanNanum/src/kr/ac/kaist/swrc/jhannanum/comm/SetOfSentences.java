@@ -65,6 +65,13 @@ public class SetOfSentences extends CommObject {
 	 * @param sentenceID - ID of the sentence
 	 * @param endOfDocument - If this flag is true, the sentence is the last one of the document.
 	 */
+	
+	private String sentence = null;
+	
+	public String getSentence() {
+		return sentence;
+	}
+	
 	public SetOfSentences(int documentID, int sentenceID, boolean endOfDocument) {
 		super.setDocumentID(documentID);
 		super.setSentenceID(sentenceID);
@@ -82,7 +89,7 @@ public class SetOfSentences extends CommObject {
 	 * @param plainEojeolArray - the array of the plain eojeols
 	 * @param eojeolSetArray - the array of the eojeol lists
 	 */
-	public SetOfSentences(int documentID, int sentenceID, boolean endOfDocument, ArrayList<String> plainEojeolArray, ArrayList<Eojeol[]> eojeolSetArray) {
+	public SetOfSentences(int documentID, int sentenceID, boolean endOfDocument, ArrayList<String> plainEojeolArray, ArrayList<Eojeol[]> eojeolSetArray, String sentence) {
 		super.setDocumentID(documentID);
 		super.setSentenceID(sentenceID);
 		super.setEndOfDocument(endOfDocument);
@@ -92,6 +99,7 @@ public class SetOfSentences extends CommObject {
 		}
 		this.plainEojeolArray = plainEojeolArray;
 		this.eojeolSetArray = eojeolSetArray;
+		this.sentence = sentence;
 	}
 	
 	/**

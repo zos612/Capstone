@@ -19,6 +19,7 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,11 +34,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import algorithms.*;
+import database.ModelCheck;
+import database.NeutralDB;
 import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 import kr.ac.kaist.swrc.jhannanum.comm.Sentence;
 import kr.ac.kaist.swrc.jhannanum.hannanum.Workflow;
 import kr.ac.kaist.swrc.jhannanum.hannanum.WorkflowFactory;
-import test.OpinionMiningProcess2;
+
 
 /**
  * This is a demo program of HanNanum that helps users to utilize the HanNanum library easily.
@@ -67,6 +70,8 @@ public class main {
 		Output2 output = null;
 		
 		NeutralDB neutralDB = new NeutralDB();
+		
+		ModelCheck modelCheck = new ModelCheck();
 
 		dictionaryReader = new DictionaryReader();
 		
@@ -94,14 +99,41 @@ public class main {
 		
 		//neutralDB.neutralDB();
 		
+		String path="reviews\\";
+				File dirFile=new File(path);
+				File []fileList=dirFile.listFiles();
+				for(File tempFile : fileList) {
+				  if(tempFile.isFile()) {
+				    String tempPath=tempFile.getParent();
+				    String tempFileName=tempFile.getName();
+				    System.out.println(tempPath+"\\\\"+tempFileName);
+				    //System.out.println("FileName="+tempFileName);
+				    /*** Do something withd tempPath and temp FileName ^^; ***/
+				  }
+				}
+				
 		Workflow workflow = WorkflowFactory.getPredefinedWorkflow(WorkflowFactory.WORKFLOW_POS_22_AND_EXTRACTOR);
 		
 		String orgUrl = null;
 		try {
 			//String model = "대우어플라이언스 DEH-C450";
-			//String model = "미로 가습기 MIRO-NR08";
-			//String model = "브리츠 BA-R9 SoundBar";
-			String model = "캔스톤 LX-C4 시그니처";
+			String model = "제닉스 IN-EAR 인이어";
+			//String model = "캔스톤 LX-C4 시그니처";
+			//String model = "대우어플라이언스 DEH-C450";
+			//String model = "test";
+			
+			
+			String categoryCurrent = "이어폰";
+			
+			//modelCheck.search(model);
+			/*if(modelCheck.search(model) == true){
+				System.err.println("등록된 모델입니다.");
+				System.exit(0);
+			} else {
+				modelCheck.insert(model);
+			}*/
+				
+
 			fis = new FileInputStream("reviews\\"+ model + ".txt");
 			//isr = new InputStreamReader(fis, "MS949");
 			isr = new InputStreamReader(fis, "UTF-8");
@@ -113,7 +145,7 @@ public class main {
 			
 				ArrayList<SentimentEojeol> seArray = new ArrayList<SentimentEojeol>();
 
-			String categoryCurrent = "스피커";
+			
 			
 			while((str = br.readLine()) != null){
 				if (str.equals("")) {
@@ -131,6 +163,7 @@ public class main {
 				System.out.println(document);
 				
 				LinkedList<Sentence> sentenceList = workflow.getResultOfDocument(new Sentence(0, 0, false));
+				//Sentence sentenceList = workflow.getResultOfSentence(new Sentence(0, 0, false));
 				
 				
 				opinionMining = new OpinionMiningProcess();

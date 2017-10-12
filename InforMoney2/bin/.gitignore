@@ -1,5 +1,4 @@
 /kr/
-/org/
 /Crawling.class
 /DTO.class
 /IDparsing.class
@@ -9,6 +8,9 @@
 /SpiderTest.class
 /algorithms/
 /backup/
+/database/
 /insertDAO.class
+/org/
+/gui/
 /main/
 /test/

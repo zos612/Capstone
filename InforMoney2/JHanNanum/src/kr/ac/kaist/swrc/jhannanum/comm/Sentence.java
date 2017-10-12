@@ -41,6 +41,14 @@ public class Sentence extends CommObject {
 	 */
 	private Eojeol[] eojeols = null;
 	
+	
+	private String sentence = null;
+	
+	
+	public String getSentence() {
+		return sentence;
+	}
+	
 	/**
 	 * Constructor.
 	 * @param documentID - ID of the document which this sentence belong to
@@ -59,13 +67,14 @@ public class Sentence extends CommObject {
 	 * @param sentenceID - ID of the sentence
 	 * @param endOfDocument - If this flag is true, this sentence is the last one of the document.
 	 */
-	public Sentence(int documentID, int sentenceID, boolean endOfDocument, String[] plainEojeols, Eojeol[] eojeols) {
+	public Sentence(int documentID, int sentenceID, boolean endOfDocument, String[] plainEojeols, Eojeol[] eojeols, String sentence) {
 		super.setDocumentID(documentID);
 		super.setSentenceID(sentenceID);
 		super.setEndOfDocument(endOfDocument);
 		
 		this.eojeols = eojeols;
 		this.plainEojeols = plainEojeols;
+		this.sentence = sentence;
 		
 		if (eojeols != null && plainEojeols != null) {
 			if (plainEojeols.length <= eojeols.length) {

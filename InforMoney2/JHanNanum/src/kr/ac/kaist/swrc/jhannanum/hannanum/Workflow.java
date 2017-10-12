@@ -697,6 +697,8 @@ public class Workflow {
 				LinkedBlockingQueue<SetOfSentences> queue = queuePhase2.get(outputQueueNum);
 				while (true) {
 					SetOfSentences sos = queue.take();
+
+					
 					list.add((T)sos);
 					if (sos.isEndOfDocument()) {
 						break;
@@ -832,6 +834,7 @@ public class Workflow {
 		
 		while ((ps = inQueue1.poll()) != null) {
 			if ((sos = morphAnalyzer.morphAnalyze(ps)) != null) {
+				//System.out.println();  
 				outQueue2.add(sos);
 			}
 		}

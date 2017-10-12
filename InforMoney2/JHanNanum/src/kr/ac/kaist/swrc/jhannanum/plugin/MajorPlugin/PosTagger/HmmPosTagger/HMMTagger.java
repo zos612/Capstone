@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
+import kr.ac.kaist.swrc.jhannanum.comm.PlainSentence;
 import kr.ac.kaist.swrc.jhannanum.comm.Sentence;
 import kr.ac.kaist.swrc.jhannanum.comm.SetOfSentences;
 import kr.ac.kaist.swrc.jhannanum.plugin.MajorPlugin.PosTagger.PosTagger;
@@ -120,6 +121,8 @@ public class HMMTagger implements PosTagger {
 		ArrayList<String> plainEojeolArray = sos.getPlainEojeolArray();
 		ArrayList<Eojeol[]> eojeolSetArray = sos.getEojeolSetArray();
 		
+		/*String sentence = sos.getSentence();
+		System.out.println("test : " + sentence);*/
 		// initialization
 		reset();
 		
@@ -340,7 +343,7 @@ public class HMMTagger implements PosTagger {
 			eojeols[--i] = mn[k].eojeol;
 		}
 
-		return new Sentence(sos.getDocumentID(), sos.getSentenceID(), sos.isEndOfDocument(), sos.getPlainEojeolArray().toArray(new String[0]), eojeols);
+		return new Sentence(sos.getDocumentID(), sos.getSentenceID(), sos.isEndOfDocument(), sos.getPlainEojeolArray().toArray(new String[0]), eojeols , sos.getSentence());
 	}
 
 	/**

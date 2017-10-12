@@ -47,7 +47,7 @@ public class WorkflowSimplePos22 {
 			
 			/* Analysis using the work flow */
 			//String sentence = "화질이 정말 좋아요.이 물건은 배송이 빨라서 정말 좋네요.분무량도 괜찬고 디자인도 예뻐요.";
-			String sentence = "일단 제품은 괜찮아보이고.\n";
+			String sentence = "소리가 떨어지다.\n";
 			workflow1.analyze(sentence);
 			workflow2.analyze(sentence);
 			

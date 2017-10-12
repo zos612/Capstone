@@ -13,14 +13,16 @@ import org.jsoup.select.Elements;
 import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 import kr.ac.kaist.swrc.jhannanum.comm.Sentence;
 
+import backup.SentimentAnalyzer_back;
+
 /** 
  * 이 클래스는 문장에서 속성명을 추출하고 
  * 속성명과 인접한 곳에서 의견 단어를 추출합니다.
  * 
  */
 public class OpinionMiningProcess {
-
-	public SentimentAnalyzer2 patternAnalyzer = null;
+	public SentimentAnalyzer_back patternAnalyzer = null;
+	//public SentimentAnalyzer patternAnalyzer = null;
 	
 	public SentimentEojeol se = null;
 	
@@ -44,6 +46,8 @@ public class OpinionMiningProcess {
 	
 	String seSentWord = null;
 	
+	public String seSentence = null;
+	
 	private Eojeol[] tmpEojeol = null;
 	
 	public static int extCnt = 0;
@@ -57,7 +61,8 @@ public class OpinionMiningProcess {
 	
 	
 	public OpinionMiningProcess(){
-		patternAnalyzer = new SentimentAnalyzer2();
+		patternAnalyzer = new SentimentAnalyzer_back();
+		//patternAnalyzer = new SentimentAnalyzer();
 		sentDoc = new SentimentDocument();
 	}
 	
@@ -73,10 +78,12 @@ public class OpinionMiningProcess {
 		for (Sentence s : sentenceList) {
 			eojeolArraySize += s.getEojeols().length;
 		}
+		
 		// +1은 배열 크기가 3보다 작은 경우 eojeolArraySize가 0이 되는것을 방지
 		eojeolArraySize = ( eojeolArraySize / 3 ) + 1;
 	
 			for (Sentence s : sentenceList) {
+				//System.out.println("테스트 : " + s.getPlainEojeols().toString());
 				featureExtract(s);
 			}
 			if(seArray != null)
@@ -97,12 +104,18 @@ public class OpinionMiningProcess {
 			/*String[] feature = {
 					"디자인","외관","속도", "가격", "무게", "색상", "색", "크기", "사이즈", "화면", "설치", "휴대성", "휴대", "화질", "사용", "사용성", "퀄리티", "품질", "키보드", "키감", "메모리", "사양", "소리", "소음"
 			};*/
-			//가습기
-			String[] feature = { "음질", "소리", "음량", "잡음", "음색", "사운드", "디자인", "제품", "상품", "가성비", "가격대비", "기능", "출력", "성능", "가격", "가격대", "조절", "사용법", "조작", "설정", "방법", "색", "색상", "색깔", "퀄리티", "품질", "음량", "배터리", "사용", "충전", "음향", "무게" };
+			//스피커
+			//String[] feature = { "음질", "소리", "음량", "잡음", "음색", "저음", "사운드", "디자인", "제품", "상품", "가성비", "가격대비", "기능", "출력", "성능", "가격", "가격대", "조절", "사용법", "조작", "설정", "방법", "색", "색상", "색깔", "퀄리티", "품질", "음량", "배터리", "사용", "충전", "음향", "무게" };
+			//이어폰
+			String[] feature = { "음질", "음색", "노이즈", "소리", "저음", "고음", "가격대비", "가격", "가성비", "디자인", "성능", "색상", "색", "색깔", "재질", "품질", "내구성", "퀄리티", "착용감", "차음성", "귀", "사용"};
+			
 			Eojeol[] eojeolArray;
+			String sentence;
 			
 			//어절을 각배열에 넣는다.
 			eojeolArray = s.getEojeols();
+			
+			sentence = s.getSentence();
 		
 			//속성이 들어있는 문장을 찾는다
 			for(int i = 0; i < feature.length; i++){
@@ -113,7 +126,8 @@ public class OpinionMiningProcess {
 						if(feature[i].equals(morphemes[k])){
 						//패턴분석 , 패턴분석 결과를 se객체에 리턴한다.
 							//while(analyzing){
-							seArray = patternAnalyzer.patternAnalyze(eojeolArray, fIndex, categoryCurrent);
+							seArray = patternAnalyzer.patternAnalyze(eojeolArray, fIndex, categoryCurrent, sentence);
+							
 						}
 					}
 				}
@@ -144,9 +158,9 @@ public class OpinionMiningProcess {
 					seFeature = seTmp.getSeFeature();
 					seSentWord = seTmp.getSeSentMorph();
 					sentiment = seTmp.getSentiment();
+					seSentence = seTmp.getSentence();
 					
-					String strSent;
-					strSent = Integer.toString(sentiment);
+					
 					System.out.print(seFeature);
 					System.out.print("\t");
 					System.out.print(seSentWord);
@@ -166,6 +180,10 @@ public class OpinionMiningProcess {
 	//				fileTest.write(" ");
 					}
 				}
+				
+				System.out.print("\t\t");
+				System.out.print(seSentence);
+				
 				System.out.println();
 				//System.out.print("  ");
 				//fileTest.write(strSent);

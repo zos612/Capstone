@@ -1,11 +1,15 @@
 package algorithms;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 import kr.ac.kaist.swrc.jhannanum.comm.Eojeol;
 
 public class SentimentAnalyzer {
+	
+	NeutralityWordAnalyzer neutWordAnalyzer = null;
+	
 	public final static int MAX_EOJEOLS = 10000;
 	
 	public SentimentEojeol se = null;
@@ -14,19 +18,23 @@ public class SentimentAnalyzer {
 	
 	private LinkedList<String> tagList = null;
 	
-	/**
+	public ArrayList<SentimentEojeol> seArray = null;
+	
+	/*
 	 * morphM1, morphM2는 각각  feature와 -1, -2만큼 떨어진 어절을 저장한다.
 	 * morphP1, morphP2는 각각  feature와 +1, +2만큼 떨어진 어절을 저장한다.
 	 * tagM1, tagM2, tagP1, tagP2도 같은 원리다.
 	 */
 	private String[] morphM1 = new String[1];
-	private String tagM1;
+	private String tagM1 = null;
 	private String[] morphM2 = new String[1];
-	private String tagM2;
+	private String tagM2 = null;
 	private String[] morphP1 = new String[1];
-	private String tagP1;
+	private String tagP1 = null;
 	private String[] morphP2 = new String[1];
-	private String tagP2;
+	private String tagP2 = null;
+	private String[] morphP3 = new String[1];
+	private String tagP3 = null;
 
 	
 	//private int arrayNum = 0;
@@ -34,7 +42,7 @@ public class SentimentAnalyzer {
 	public final static int NZV_PATTERN = 2;
 	public final static int NZN_PATTERN = 3;
 	public final static int NNN_PATTERN = 4;
-	public final static int VN_PATTERN = 5;
+	//public final static int VN_PATTERN = 5;
 	public final static int NN_PATTERN = 6;
 	public final static int ZVN_PATTERN = 7;
 	public final static int ZNN_PATTERN = 8;
@@ -44,7 +52,7 @@ public class SentimentAnalyzer {
 	public final static int NVV_PATTERN = 12;
 	public final static int VNV_PATTERN = 13;
 	public final static int VNN_PATTERN = 14;
-
+	public final static int NZNV_PATTERN = 15;
 
 	public int patternNum = 0;
 	
@@ -52,17 +60,20 @@ public class SentimentAnalyzer {
 	public int seValue = 0; //se에 넣을 감정수치
 	public String seSentWord = null; //se에 넣을 감정단어
 	public String seFeature = null; //se에 넣을 특징
-	Eojeol[] seArray; //se에 넣을 어절배열
+	public String seSentence  = null;
+	Eojeol[] seMorphArray; //se에 넣을 어절배열
 	
 	String[] morpheme = null; //어절
 	String[] tag = null; //태그
 	
-	public String strSentValue = null; //감정수치 String값
+	private String strSentValue = null; //감정수치 String값
 	
-	public int arrayNum = 0;
+	private String SentWord;	
+	
+	public int arrayNum = 0;		
 	
 	Eojeol[] morphArray;
-	Eojeol[] morphArrayCP;
+
 	
 
 	
@@ -72,14 +83,26 @@ public class SentimentAnalyzer {
 	int check = 0; // 감정 분석이 두 번 이상 되지 않도록 체크함. 값이'0'이면 감정분석 x 1이면 감정분석 o
 	int start;
 	int end;
-	String tempMorph = null;
+	String tempWord = null;
+	
+	String categoryCurrent;
+	
+	String featureCurrent;
+	
+	String antiMorph = "않";
+
+	String antiVerb = null; // "않다"
+	
+	
 	
 	public SentimentAnalyzer(){
 		morphList = new LinkedList<String>();
 		tagList = new LinkedList<String>();
+		neutWordAnalyzer = new NeutralityWordAnalyzer();
+		seArray = new ArrayList<SentimentEojeol>();
 	}
 	
-	public SentimentEojeol patternAnalyze(Eojeol[] morphArray, int fIndex){
+	public ArrayList<SentimentEojeol> patternAnalyze(Eojeol[] morphArray, int fIndex, String categoryCurrent, String sentence){
 		check = 0;
 		mKey = 0;
 		pKey = 0;
@@ -94,6 +117,10 @@ public class SentimentAnalyzer {
 		int arrayEnd = morphArray.length - 1;
 		seFeature = morphArray[fIndex].getMorphemes()[0];
 		
+		this.categoryCurrent = categoryCurrent;
+		this.featureCurrent = seFeature;
+		seSentence = sentence;
+		
 		//문장의 마지막에서 .으로 끝나지 않는경우 마지막 배열이 null로 끝나지 않아서 값을 불러올 떄 null포인터 에러가 뜬다
 				//이를 막기위해 마지막 배열이 null이 아니면 배열의 크기를 1늘려 null인 마지막 배열을 생성한다. 
 				if(morphArray[arrayEnd].getMorphemes()[0] != null){
@@ -102,15 +129,12 @@ public class SentimentAnalyzer {
 					this.morphArray = morphArray;
 				}
 				
-				morphArrayCP = morphArray.clone();
+				//morphArray = morphArray.clone();
 		/*morphM1[0] = null;
 		morphM2[0] = null;
 		morphP1[0] = null;
 		morphP2[0] = null;*/
-		/*tagM1 = null;
-		tagM2 = null;
-		tagP1 = null;
-		tagP2 = null;*/
+		
 		
 		
 		/**
@@ -121,56 +145,74 @@ public class SentimentAnalyzer {
 		if(fIndex >= 1){
 			if(morphArray[fIndex-1].getMorphemes()[0] != null){
 				mKey = 1;
-				morphM1 = morphArrayCP[fIndex-1].getMorphemes();
-				tagM1 =  morphArrayCP[fIndex-1].getTag(0);
+				morphM1 = morphArray[fIndex-1].getMorphemes();
+				tagM1 =  morphArray[fIndex-1].getTag(0);
+				
+				if(fIndex >= 2 && check != 1 ){
+					if(morphArray[fIndex-2].getMorphemes()[0] != null){
+						mKey = 2;
+						morphM2 = morphArray[fIndex-2].getMorphemes();
+						tagM2 = new String(morphArray[fIndex-2].getTag(0));
+						
+					}
+				}
 			}
+			
 		}
 		/**
 		 * feature의 위치가 -2이하인 경우 fIndex-2위치의 어절이 존재하는지 확인한다. 또한 fIndex-2위치의 어절이 null인지 확인 
 		 * fIndex-2위치의 어절과 태그를 변수에 저장한다.
 		 */
-		if(fIndex >= 2  ){
-			if(morphArrayCP[fIndex-2].getMorphemes()[0] != null){
+		/*if(fIndex >= 2 && check != 1 ){
+			if(morphArray[fIndex-2].getMorphemes()[0] != null){
 				mKey = 2;
-				morphM2 = morphArrayCP[fIndex-2].getMorphemes();
-				tagM2 = new String(morphArrayCP[fIndex-2].getTag(0));
+				morphM2 = morphArray[fIndex-2].getMorphemes();
+				tagM2 = new String(morphArray[fIndex-2].getTag(0));
 			}
-		}
+		}*/
 		/**
 		 * fIndex+1위치의 어절이 null인지 확인 
 		 * fIndex+1위치의 어절과 태그를 변수에 저장한다.
 		 */
-		if(morphArrayCP[fIndex+1].getMorphemes()[0] != null){
+		if(morphArray[fIndex+1].getMorphemes()[0] != null){
 			pKey = 1;
-			morphP1 = morphArrayCP[fIndex+1].getMorphemes();
-			tagP1 = new String(morphArrayCP[fIndex+1].getTag(0));
+			morphP1 = morphArray[fIndex+1].getMorphemes();
+			tagP1 = new String(morphArray[fIndex+1].getTag(0));
 		}
 		
-		if(morphArrayCP[fIndex+1].getMorphemes()[0] != null){
-			if(morphArrayCP[fIndex+2].getMorphemes()[0] != null)
+		if(morphArray[fIndex+1].getMorphemes()[0] != null){
+			if(morphArray[fIndex+2].getMorphemes()[0] != null)
 			{
 				pKey = 2;
-				morphP2 = morphArrayCP[fIndex+2].getMorphemes();
-				tagP2 = new String(morphArrayCP[fIndex+2].getTag(0));
+				morphP2 = morphArray[fIndex+2].getMorphemes();
+				tagP2 = new String(morphArray[fIndex+2].getTag(0));
+				if(morphArray[fIndex+3].getMorphemes()[0] != null)
+				{
+					pKey = 3;
+					morphP3 = morphArray[fIndex+2].getMorphemes();
+					tagP3 = new String(morphArray[fIndex+2].getTag(0));
+				}
 			}
 		}
-			if(pKey >= 1){
+
+		
+			if (pKey >= 1 && check != 1){
 				//배열의  fIndex가 0인 경우 tagM1을 참조하면 널 포인터 에러가 나기 때문에 조건을 붙임
-				if(tagP1.charAt(0) == 'P'){
-					if(tagP2 != null && tagP2.charAt(0) == 'P'){
+				if (tagP1.charAt(0) == 'P'){
+					if (tagP2 != null && morphP2[0].equals(antiMorph)){
 							patternNum = NVV_PATTERN;
 							sentAnalyze();
 							check = 1;
-					}else if(tagM1 != null && tagM1.equals("MA")){
+					}else if (tagM1 != null && tagM1.equals("MA")){
 							patternNum = ZNV_PATTERN;
 							sentAnalyze();
 							check = 1;
 							//예쁜 디자인이 좋다
-					}else if(tagM1 != null && tagM1.charAt(0) == 'P'){
+					}/*else if(tagM1 != null && tagM1.charAt(0) == 'P'){
 							patternNum = VNV_PATTERN;
 							sentAnalyze();
 							check = 1;
-					}else{
+					}*/else{
 						patternNum = NV_PATTERN;
 						sentAnalyze();
 						check = 1;
@@ -196,11 +238,11 @@ public class SentimentAnalyzer {
 						sentAnalyze();
 						check = 1;
 						}
-					else if(tagP1.charAt(0)=='N' && tagP2.charAt(0)=='N'){
+					/*else if(tagP1.charAt(0)=='N' && tagP2.charAt(0)=='N'){
 						patternNum = NNN_PATTERN;
 						sentAnalyze();
 						check = 1;
-						}
+						}*/
 					else if(tagP1.charAt(0)=='N' && tagP2.charAt(0)=='P'){
 						patternNum = NNV_PATTERN;
 						sentAnalyze();
@@ -228,19 +270,20 @@ public class SentimentAnalyzer {
 						}
 				}*/
 				if(tagM1.charAt(0) == 'P'){
-					if(tagP1 !=null && tagP1.charAt(0)=='N'){
+					/*if(tagP1 !=null && tagP1.charAt(0)=='N'){
 					patternNum = VNN_PATTERN;
 					sentAnalyze();
 					check = 1;
-					}else if(tagM2 != null && tagM2.equals("MA")){
+					}else*/ 
+					if(tagM2 != null && tagM2.equals("MA")){
 						patternNum = ZVN_PATTERN;
 						sentAnalyze();
 						check = 1;
-					}else {
+					}/*else {
 					patternNum = VN_PATTERN;
 					sentAnalyze();
 					check = 1;
-					}
+					}*/
 				}else if(tagM1.charAt(0)=='N'){
 					if(tagM2 != null && tagM2.equals("MA")){
 						patternNum = ZNN_PATTERN;
@@ -264,68 +307,97 @@ public class SentimentAnalyzer {
 						check = 1;
 					}
 				}*/
-				
 				}
 			
+			if(pKey >= 3 && check != 1){
+				//배열의  fIndex가 0인 경우 tagM1을 참조하면 널 포인터 에러가 나기 때문에 조건을 붙임
+					if(tagP1.equals("MA") && tagP2.charAt(0) == 'P' && tagP3.charAt(0) == 'N' ){
+							patternNum = NZNV_PATTERN;
+							sentAnalyze();
+							check = 1;
+				}
+			}
 			
+			//OpinionMiningProcess.analyzing = false;
 			if(check == 1)
-			print();
-			//감정단어가 비어있으면 의미가 없으므로 출력하지 않는다.
-			if(seSentWord == null)
-				return null;
-			
-			return se;
+				print();
+
+			tagM1 = null;
+			tagM2 = null;
+			tagP1 = null;
+			tagP2 = null;
+
+			return seArray;
 		}
 		
 	
 	public void sentAnalyze(){
 
-		if(patternNum == NV_PATTERN){
-			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
-			tempMorph = DictionaryReader.VACor.get(morphP1[0]);
+		if (patternNum == NV_PATTERN){
+			//형태소 -> 단어 (임시)
+			tempWord = DictionaryReader.VACor.get(morphP1[0]);
+			if (tempWord != null){
+				//형태소 -> 단어
+				morphP1[0] = tempWord;
+				//형태소에서 String형태의 감정수치를 가져온다.
+				strSentValue = DictionaryReader.sentimentDic.get(morphP1[0]);
+				if (strSentValue != null){
+					//int형 감정수치
+					seValue = Integer.parseInt(strSentValue);
+					//se에 감정단어 등록
+					seSentWord = tempWord;
+				}
+				
+			}
+			/*//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
+			tempWord = DictionaryReader.VACor.get(morphP1[0]);
 
-			if(tempMorph != null){
-				morphP1[0] = tempMorph;
+			if(tempWord != null){
+				morphP1[0] = tempWord;
 				strSentValue = DictionaryReader.sentimentDic.get(morphP1[0]);
 				if(strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
 				seSentWord = morphP1[0];
 				}
-			}
+			}*/
 			start = fIndex;
 			end = fIndex + 2;
 		}
 		else if(patternNum == NZV_PATTERN){
-			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
-			tempMorph = DictionaryReader.VACor.get(morphP2[0]);
-			if(tempMorph != null){
-				morphP2[0] = tempMorph;
+			//형태소 -> 단어 (임시)
+			tempWord = DictionaryReader.VACor.get(morphP2[0]);
+			if(tempWord != null){
+				//형태소 -> 단어
+				morphP2[0] = tempWord;
+				//형태소에서 String형태의 감정수치를 가져온다.
 				strSentValue = DictionaryReader.sentimentDic.get(morphP2[0]);
 				if(strSentValue != null){
-					seValue = Integer.parseInt(strSentValue);
-					seSentWord = morphP2[0];
+				//int형 감정수치
+				seValue = Integer.parseInt(strSentValue);
+				//se에 감정단어 등록
+				seSentWord = tempWord;
 				}
 			}
-
 			start = fIndex;
 			end = fIndex + 3;
 		}
 		else if(patternNum == NZN_PATTERN){
-				//명사인 감정단어가 감정수치 사전에 등록되 있으면 감정수치를 저장한다.
+			
+				//형태소에서 String형태의 감정수치를 가져온다.
 				strSentValue = DictionaryReader.sentimentDic.get(morphP2[0]);
 				if(strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
 				seSentWord = morphP2[0];
 				}
 				//명사인 감정단어가 보정사전에 등록되있으면  보정단어를 저장한다.
-				tempMorph = DictionaryReader.nounCor.get(morphP2[0]);
-				if(tempMorph != null){
-					morphP2[0] = tempMorph;
+				tempWord = DictionaryReader.nounCor.get(morphP2[0]);
+				if(tempWord != null){
+					morphP2[0] = tempWord;
 				}
 			start = fIndex;
 			end = fIndex + 3;
 		}
-		else if(patternNum == NNN_PATTERN){
+		/*else if(patternNum == NNN_PATTERN){
 			//명사인 감정단어가 감정수치 사전에 등록되 있으면 감정수치를 저장한다.
 				strSentValue = DictionaryReader.sentimentDic.get(morphP2[0]);
 			if(strSentValue != null){
@@ -333,17 +405,17 @@ public class SentimentAnalyzer {
 				seSentWord = morphP2[0];
 			}
 			//명사인 감정단어가 보정사전에 등록되있으면  보정단어를 저장한다.
-				tempMorph = DictionaryReader.nounCor.get(morphP2[0]);
-			if(tempMorph != null){
-				morphP2[0] = tempMorph;
+				tempWord = DictionaryReader.nounCor.get(morphP2[0]);
+			if(tempWord != null){
+				morphP2[0] = tempWord;
 			}
 			start = fIndex;
 			end = fIndex + 3;
-		}
-		else if(patternNum == VN_PATTERN){
-			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
-			if(tempMorph != null){
-				morphM1[0] = tempMorph;
+		}*/
+		/*else if(patternNum == VN_PATTERN){
+			tempWord = DictionaryReader.VACor.get(morphM1[0]);
+			if(tempWord != null){
+				morphM1[0] = tempWord;
 				strSentValue = DictionaryReader.sentimentDic.get(morphM1[0]);
 				if(strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
@@ -352,11 +424,11 @@ public class SentimentAnalyzer {
 			}
 			start = fIndex - 1;
 			end = fIndex + 1;
-		}	
+		}*/	
 		else if(patternNum == NN_PATTERN){
-			/*tempMorph = DictionaryReader.VACor.get(morphM1[0]);
-			if(tempMorph != null){
-				morphM1[0] = tempMorph;*/
+			/*tempWord = DictionaryReader.VACor.get(morphM1[0]);
+			if(tempWord != null){
+				morphM1[0] = tempWord;*/
 				strSentValue = DictionaryReader.sentimentDic.get(morphM1[0]);
 				if(strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
@@ -367,23 +439,25 @@ public class SentimentAnalyzer {
 			start = fIndex - 1;
 			end = fIndex + 1;
 		}	
-		else if(patternNum == ZVN_PATTERN){
-			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
-			if(tempMorph != null){
-				morphM1[0] = tempMorph;
+		else if (patternNum == ZVN_PATTERN){
+			
+			
+			tempWord = DictionaryReader.VACor.get(morphM1[0]);
+			if (tempWord != null){
 				strSentValue = DictionaryReader.sentimentDic.get(morphM1[0]);
-				if(strSentValue != null){
+				morphM1[0] = tempWord;
+				if (strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
-				seSentWord = morphM1[0];
+				seSentWord = tempWord;
 				}
 			}
 			start = fIndex - 2;
 			end = fIndex + 1;
 		}	
 		else if(patternNum == ZNN_PATTERN){
-			/*tempMorph = DictionaryReader.VACor.get(morphM1[0]);
-			if(tempMorph != null){
-				morphM1[0] = tempMorph;*/
+			/*tempWord = DictionaryReader.VACor.get(morphM1[0]);
+			if(tempWord != null){
+				morphM1[0] = tempWord;*/
 				strSentValue = DictionaryReader.sentimentDic.get(morphM1[0]);
 				if(strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
@@ -393,16 +467,16 @@ public class SentimentAnalyzer {
 			start = fIndex - 2;
 			end = fIndex + 1;
 		}	
-		else if(patternNum == ZNV_PATTERN){
+		else if (patternNum == ZNV_PATTERN){
 			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
-			tempMorph = DictionaryReader.VACor.get(morphP1[0]);
+			tempWord = DictionaryReader.VACor.get(morphP1[0]);
 
-			if(tempMorph != null){
-				morphP1[0] = tempMorph;
+			if (tempWord != null){
 				strSentValue = DictionaryReader.sentimentDic.get(morphP1[0]);
-				if(strSentValue != null){
+				morphP1[0] = tempWord;
+				if (strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
-				seSentWord = morphP1[0];
+				seSentWord = tempWord;
 				}
 			}
 			start = fIndex - 1;
@@ -410,13 +484,13 @@ public class SentimentAnalyzer {
 		}	
 		else if(patternNum == NNV_PATTERN){
 			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
-			tempMorph = DictionaryReader.VACor.get(morphP2[0]);
-			if(tempMorph != null){
-				morphP2[0] = tempMorph;
+			tempWord = DictionaryReader.VACor.get(morphP2[0]);
+			if(tempWord != null){
 				strSentValue = DictionaryReader.sentimentDic.get(morphP2[0]);
+				morphP2[0] = tempWord;
 				if(strSentValue != null){
 					seValue = Integer.parseInt(strSentValue);
-					seSentWord = morphP2[0];
+					seSentWord = tempWord;
 				}
 			}
 
@@ -424,26 +498,34 @@ public class SentimentAnalyzer {
 			end = fIndex + 3;
 		}
 		else if(patternNum == NVV_PATTERN){
-			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
-			tempMorph = DictionaryReader.VACor.get(morphP2[0]);
-			if(tempMorph != null){
-				morphP2[0] = tempMorph;
-				strSentValue = DictionaryReader.sentimentDic.get(morphP2[0]);
-				if(strSentValue != null){
-					seValue = Integer.parseInt(strSentValue);
-					seSentWord = morphP2[0];
-				}
+			
+			//나쁘 -> 부정 -> '-1'
+			strSentValue = DictionaryReader.sentimentDic.get(morphP1[0]);
+			//ex) 나쁘 + 지 -> 나쁘지
+			String sentji = morphP1[0] + "지 ";
+			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다
+			String antiVerb = DictionaryReader.VACor.get(morphP2[0]);
+			
+			//형태소 -> 단어
+			morphP1[0] = sentji;
+			morphP2[0] = antiVerb;
+			
+			//감정 수치가 존재하면 seSentWord에 등록
+			if(strSentValue != null){
+				seValue = Integer.parseInt(strSentValue);
+				seValue *= -1; 
+				seSentWord = sentji + antiVerb;
 			}
-
+			
 			start = fIndex;
 			end = fIndex + 3;
 		}
-		else if(patternNum == VNV_PATTERN){
+		/*else if(patternNum == VNV_PATTERN){
 			//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
-			tempMorph = DictionaryReader.VACor.get(morphP1[0]);
+			tempWord = DictionaryReader.VACor.get(morphP1[0]);
 
-			if(tempMorph != null){
-				morphP1[0] = tempMorph;
+			if(tempWord != null){
+				morphP1[0] = tempWord;
 				strSentValue = DictionaryReader.sentimentDic.get(morphP1[0]);
 				if(strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
@@ -452,11 +534,11 @@ public class SentimentAnalyzer {
 			}
 			start = fIndex - 1;
 			end = fIndex + 2;
-		}	
-		else if(patternNum == VNN_PATTERN){
-			tempMorph = DictionaryReader.VACor.get(morphM1[0]);
-			if(tempMorph != null){
-				morphM1[0] = tempMorph;
+		}	*/
+		/*else if(patternNum == VNN_PATTERN){
+			tempWord = DictionaryReader.VACor.get(morphM1[0]);
+			if(tempWord != null){
+				morphM1[0] = tempWord;
 				strSentValue = DictionaryReader.sentimentDic.get(morphM1[0]);
 				if(strSentValue != null){
 				seValue = Integer.parseInt(strSentValue);
@@ -465,15 +547,36 @@ public class SentimentAnalyzer {
 			}
 			start = fIndex - 1;
 			end = fIndex + 2;
+		}*/
+		
+		else if(patternNum == NZNV_PATTERN){
+		//형용사 또는 동사인 감정단어가 보정사전에 등독되 있지 않으면  단어보정과 감정수치를 구하지 않는다 
+		tempWord = DictionaryReader.VACor.get(morphP3[0]);
+		if(tempWord != null){
+			strSentValue = DictionaryReader.sentimentDic.get(morphP3[0]);
+			morphP3[0] = tempWord;
+			if(strSentValue != null){
+				seValue = Integer.parseInt(strSentValue);
+				seSentWord = tempWord;
+			}
 		}
-		
-		
+
+		start = fIndex;
+		end = fIndex + 4;
+	}
+		//IntseValue = new Integer(seValue);
+		//단어의 감정 수치를 입력
+		neutWordAnalyzer.setSentValue(seValue);
+		if(seSentWord != null){
+			neutWordAnalyzer.anlyze(categoryCurrent, featureCurrent, seSentWord);
+			seValue = neutWordAnalyzer.getSentValue();
+		}
 	}
 	public void print(){
 		
-		seArray = new Eojeol[end - start + 1];
+		seMorphArray = new Eojeol[end - start + 1];
 		for(int i = 0 ; i < end - start + 1 ; i++){
-			seArray[i] = new Eojeol(null,null);
+			seMorphArray[i] = new Eojeol(null,null);
 		}
 		
 		System.out.print("{ ");
@@ -488,21 +591,29 @@ public class SentimentAnalyzer {
 			morphList.add(morpheme[0]);
 			tagList.add(tag[0]);
 			
-					System.out.print(morpheme[0]);
-					System.out.print("/");
-					System.out.print(tag[0]);
+			System.out.print(morpheme[0]);
+			System.out.print("/");
+			System.out.print(tag[0]);
 				
-				System.out.print(", ");
-				
-				seArray[k-start].setMorphemes(morphList.toArray(new String[0]));
-				seArray[k-start].setTags(tagList.toArray(new String[0]));
+			System.out.print(", ");
+			
+			seMorphArray[k-start].setMorphemes(morphList.toArray(new String[0]));
+			seMorphArray[k-start].setTags(tagList.toArray(new String[0]));
 		}
 		
-		se = new SentimentEojeol(seFeature, seSentWord, seValue, seArray);
+		
+		se = new SentimentEojeol(seFeature, seSentWord, seValue, seMorphArray, seSentence);
 		se.length = end - start;
+		
+		//감정단어가 비어있으면 의미가 없으므로 출력하지 않는다.
+				if(seSentWord != null){
+					//seArray배열에 어절과 감정수치 저장
+					seArray.add(se);
+				}
 		
 		System.out.print("} ");
 		System.out.print("-> ");
+		
 		
 		if(seValue == 1){
 			System.out.print("긍정 ");
@@ -545,6 +656,8 @@ public class SentimentAnalyzer {
 			System.out.print("(VNV_13)");
 		}else if(patternNum ==14){
 			System.out.print("(VNN_14)");
+		}else if(patternNum ==15){
+			System.out.print("(NZNV_15)");
 		}
 		
 		/*public final static int NV_PATTERN = 1;

@@ -36,6 +36,8 @@ public class SentimentEojeol implements Cloneable {
 	
 	private String seSentMorph = null;
 	
+	private String seSentence = null;
+	
 	/**
 	 * Eojeol sentValue of each morpheme.
 	 */
@@ -57,11 +59,12 @@ public class SentimentEojeol implements Cloneable {
 	 * @param sentValue - tag array for each morpheme
 	 */
 	
-	 public SentimentEojeol(String seFeature, String seSentMorph, int sentValue, Eojeol[] eojeols) {
+	 public SentimentEojeol(String seFeature, String seSentMorph, int sentValue, Eojeol[] eojeols, String seSentence) {
 		 this.seFeature = seFeature;
 		 this.seSentMorph = seSentMorph;
 		 this.sentValue = sentValue;
 		 this.eojeols = eojeols;
+		 this.seSentence = seSentence;
 	}
 	 public Object clone(){
 		 try{
@@ -70,7 +73,9 @@ public class SentimentEojeol implements Cloneable {
 			 return null;
 		 }
 	 }
-	
+	 public String getSentence() {
+			return seSentence;
+		}
 	 public String getSeSentMorph() {
 			return seSentMorph;
 			}
